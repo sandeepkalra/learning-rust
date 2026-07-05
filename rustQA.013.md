@@ -3,7 +3,7 @@
 ## Question 1: Does Rust allow named function calling arguments (like Swift)?
 
 ### Question
-In Rust function calls, do we have named callings allowed like in Swift (`createWindow(width: 800, height: 600)`) or Python?
+In Rust function calls, are named arguments allowed like in Swift (`createWindow(width: 800, height: 600)`) or Python?
 
 ---
 
@@ -74,7 +74,7 @@ let client = HttpClientBuilder::new()
 ## Question 2: Does idiomatic method chaining prefer returning `&mut Self`?
 
 ### Question
-For writing code that can be chained idiomatically, does Rust prefer to return `&mut T` (`&mut Self`) back from a function?
+For writing code that can be chained idiomatically, does Rust prefer to return `&mut T` (`&mut Self`) from a function?
 
 ---
 
@@ -86,7 +86,7 @@ Instead, idiomatic Rust builders prefer **taking and returning ownership by valu
 Here is why Rust prefers **By-Value Chaining (`Self`)** over **By-Reference Chaining (`&mut Self`)**:
 
 #### 1. The Idiomatic Gold Standard: By-Value Chaining (`mut self -> Self`) ⭐
-In by-value chaining, each method takes ownership of `self`, modifies it, and returns the owned `Self` back to the caller:
+In by-value chaining, each method takes ownership of `self`, modifies it, and returns the owned `Self` to the caller:
 
 ```rust
 struct WindowBuilder {
@@ -122,7 +122,7 @@ impl WindowBuilder {
 ---
 
 #### 2. When is `&mut self -> &mut Self` used?
-You only return `&mut Self` when your API is specifically designed to modify an **already existing, long-lived object** across multiple lines or inside loops (such as standard library `std::process::Command`).
+You only return `&mut Self` when your API is specifically designed to modify an **already existing, long-lived object** across multiple lines or inside loops (such as the standard library's `std::process::Command`).
 
 ```rust
 impl WindowBuilder {

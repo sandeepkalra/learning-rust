@@ -13,7 +13,7 @@ fn main() {
     println!("msg:{m} , {j} ");
 }
 ```
-When `j.trim()` returns a slice without modifying the original `j`, and I modify `j` later (`j = String::from("NEW!")`), shouldn't the value of `m` later reflect the wrong value or be affected by `j`?
+When `j.trim()` returns a slice without modifying the original `j`, and I modify `j` later (`j = String::from("NEW!")`), shouldn't the value of `m` reflect the wrong value or be affected by `j`?
 
 ---
 

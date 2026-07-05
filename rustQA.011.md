@@ -141,7 +141,7 @@ Both C++ and Rust use Vtables for runtime dispatch, but they store the Vtable po
 ## Question 3: Is there a runtime cost to `dyn Trait`, and can one `impl` block implement multiple traits?
 
 ### Question
-Similar to C++ virtual dispatch, is there a runtime cost to `dyn Trait`? Also, can a single `impl for struct` block club two or more traits in `{ }`, or must they be written one by one?
+Similar to C++ virtual dispatch, is there a runtime cost to `dyn Trait`? Also, can a single `impl` block combine two or more traits in `{ }`, or must they be written one by one?
 
 ---
 
@@ -191,7 +191,7 @@ impl std::fmt::Display for Dog {
 ## Question 4: Code Bloat in Generics vs Trait Objects
 
 ### Question
-For each trait implementation on generics, is there an issue of code bloating that can potentially happen if the generic is picked by a lot of concrete types?
+For each trait implementation using generics, is there an issue of code bloat that can potentially happen if the generic is instantiated with many concrete types?
 
 ---
 

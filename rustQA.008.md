@@ -156,7 +156,7 @@ fn main() {
 ## Question 3: Does struct field visibility or declaration order affect memory packing?
 
 ### Question
-Does the order of struct `pub` and non-pub elements in a Rust struct matter from the point of its memory packing?
+Does the order of `pub` and non-pub fields in a Rust struct matter from the perspective of memory packing?
 
 ---
 
@@ -196,7 +196,7 @@ struct FfiData {
     c: u8,
 }
 ```
-When tagged with `#[repr(C)]`, Rust locks the memory layout to match C specifications exact top-to-bottom declaration order (resulting in 24 bytes). But even here, whether a field is `pub` or private has zero effect on the packing!
+When tagged with `#[repr(C)]`, Rust locks the memory layout to match the C specification's exact top-to-bottom declaration order (resulting in 24 bytes). But even here, whether a field is `pub` or private has zero effect on the packing!
 
 ---
 

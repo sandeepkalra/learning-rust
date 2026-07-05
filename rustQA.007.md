@@ -15,7 +15,7 @@ fn main() {
 ```
 When `j.trim()` returns a slice without modifying the original `j`, its characters are copied to create `m`, and later modifying `j` is okay.
 
-However, in this alternate program, which seems to have similar slice functionality, it fails to compile:
+However, this alternate program, which seems to have similar slice functionality, fails to compile:
 ```rust
 fn first_word(s: &String) -> &str {
     let b = s.as_bytes();

@@ -3,7 +3,7 @@
 ## Question: What are all the different ways a lifetime can exist in Rust across all types?
 
 ### Question
-In Rust, explain all the different ways a lifetime can exist, with all types e.g. `Fn`, `FnOnce`, `FnMut`, traits, generics, structs, etc.
+In Rust, explain all the different ways a lifetime can exist across various types, e.g., `Fn`, `FnOnce`, `FnMut`, traits, generics, and structs.
 
 ---
 
@@ -136,7 +136,7 @@ fn store_parser<'a>(p: Box<dyn Parser<'a> + 'a>) { ... }
 
 ##### A. The `'static` Lifetime (Two Distinct Meanings!)
 1. **As a Reference (`&'static str`):** A reference pointing to data that lives for the entire duration of the running program (e.g., string literals baked into the read-only binary segment, or memory intentionally leaked via `Box::leak()`).
-2. **As a Trait Bound (`T: 'static`):** Means *"Type `T` contains **NO temporary or short-lived references**!"* 
+2. **As a Trait Bound (`T: 'static`):** This means *"Type `T` contains **NO temporary or short-lived references**!"* 
    * Owned types like `String`, `i32`, `Vec<u8>`, and even `&'static str` all satisfy `T: 'static`!
    * This bound is mandatory when spawning threads (`std::thread::spawn`) or storing values in global statics, ensuring a thread won't try to read a stack reference after the parent function exits.
 

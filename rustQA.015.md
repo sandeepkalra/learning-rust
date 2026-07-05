@@ -12,7 +12,7 @@ Explain the inner workings of `Cow<T>` in Rust. When should we use it? How does 
 
 Here is the deep dive into how it works under the hood, when to use it, and how it detects writes:
 
-#### 1. Inner Working: What is `Cow<T>` under the hood?
+#### 1. Inner Workings: What is `Cow<T>` under the hood?
 Under the hood, `Cow<'a, B>` is literally just a standard Rust **Enum with two variants**:
 
 ```rust
@@ -98,7 +98,7 @@ impl<'a, B: ?Sized + ToOwned> Cow<'a, B> {
 ## Question 2: How can `Cow<T>` be used for Frontend/Backend dirty form detection?
 
 ### Question
-Give an example of `Cow<T>` code where the backend is presenting a data-form to frontend, then user may click Save button, and we want to perform a write if data is dirty, or else simply not perform anything.
+Give an example of `Cow<T>` code where the backend is presenting a data form to the frontend, then the user may click the Save button, and we want to perform a write if the data is dirty, or else simply do nothing.
 
 ---
 

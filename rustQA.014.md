@@ -8,7 +8,7 @@ Can one trait in Rust have more than one method? If yes, show an example of it a
 ---
 
 ### Answer
-**Yes, absolutely!** A single trait in Rust can have as many methods as you want (for example, standard library's `Iterator` trait has over 70 methods!).
+**Yes, absolutely!** A single trait in Rust can have as many methods as you want (for example, the standard library's `Iterator` trait has over 70 methods!).
 
 Even better: when a trait has multiple methods, you can provide **default implementations** for some of them. Any struct implementing your trait gets those default methods for free!
 
@@ -93,14 +93,14 @@ fn main() {
 ## Question 2: How does `impl Trait for Struct` differ from a regular `impl Struct` block?
 
 ### Question
-For `impl <trait>` blocks on a struct, how is this different than a usual inherent `impl` block on a struct? At first glance, it seems just like a named `impl` block tied to a struct.
+For `impl <trait>` blocks on a struct, how are they different from a usual inherent `impl` block on a struct? At first glance, it seems just like a named `impl` block tied to a struct.
 
 ---
 
 ### Answer
 At the surface level, writing `impl Vehicle for Car` does look just like a named `impl` block attaching methods to `Car`.
 
-However, at the architectural and compiler level, **trait `impl` blocks give your struct four massive superpowers that regular inherent `impl Car` blocks cannot do**:
+However, at the architectural and compiler level, **trait `impl` blocks give your struct four massive superpowers that regular inherent `impl Car` blocks cannot provide**:
 
 #### 1. Polymorphism & Generics (The Interface Contract) ⭐
 If you write methods in a regular `impl Car` block, those methods are locked **only** to `Car`. You cannot write a function that accepts *"any struct that happens to have a `drive()` method"* because Rust does not do duck-typing.
@@ -151,10 +151,10 @@ If two third-party libraries both add a `.format()` method to your struct via di
 
 ---
 
-## Question 3: Can trait methods directly call regular struct methods (and vice-versa)?
+## Question 3: Can trait methods directly call regular struct methods (and vice versa)?
 
 ### Question
-Can trait block methods directly call `object.method()` from a regular `impl struct` block? Is vice-versa also allowed?
+Can trait block methods directly call `object.method()` from a regular `impl struct` block? Is vice versa also allowed?
 
 ---
 
@@ -179,7 +179,7 @@ impl Car {
     pub fn start_engine(&self) {
         println!("Engine started for {}", self.brand);
 
-        // ✅ VICE-VERSA: Regular method directly calling a Trait method!
+        // ✅ VICE VERSA: Regular method directly calling a Trait method!
         self.honk_horn(); 
     }
 
@@ -248,7 +248,7 @@ Why? Because **trait methods automatically inherit the visibility of the `trait`
 ## Question 5: Can a trait method be restricted from calling struct fields or methods?
 
 ### Question
-Can a trait method be restricted in any way from calling `object.fields` or `object.methods()`?
+Can a trait method be restricted in any way from accessing object.fields or calling `object.methods()`?
 
 ---
 
@@ -320,12 +320,12 @@ impl Vehicle for Car {
 ## Question 6: How can `impl Vehicle for Car` live in a different module?
 
 ### Question
-Show how `impl Vehicle for Car` can be placed inside a completely different module than the struct definition, and how visibility restrictions apply.
+Show how `impl Vehicle for Car` can be placed inside a completely different module from the struct definition, and how visibility restrictions apply.
 
 ---
 
 ### Answer
-Here is a complete, runnable example showing how `impl Vehicle for Car` can live inside a completely **different module (`mod garage`)** than the struct definition (`mod models`).
+Here is a complete, runnable example showing how `impl Vehicle for Car` can live inside a completely **different module (`mod garage`) from** the struct definition (`mod models`).
 
 Notice how placing the trait implementation in a different module immediately **restricts it from accessing private fields or private methods**!
 

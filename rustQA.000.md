@@ -3,7 +3,7 @@
 ## Question 1: What are some highly regarded open-source projects for learning Rust?
 
 ### Question
-What are some very good projects that I can use as a learning ground to learn Rust? I wish to only use those that are highly regarded by the Rust society/community.
+What are some very good projects that I can use as a training ground to learn Rust? I wish to only use those that are highly regarded by the Rust community.
 
 ---
 

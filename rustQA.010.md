@@ -87,7 +87,7 @@ fn main() {
 ## Question 2: What is the exhaustive list of overloadable operators in Rust?
 
 ### Question
-Is the list of overloadable operators exhaustive, or what all operators can be overloaded? Are there any operators that cannot be overloaded?
+Is the list of overloadable operators exhaustive, or which operators can be overloaded? Are there any operators that cannot be overloaded?
 
 ---
 

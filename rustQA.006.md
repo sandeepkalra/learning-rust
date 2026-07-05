@@ -261,7 +261,7 @@ If you have a 1-million-letter ASCII text document in memory (taking up **1 MB**
 ## Question 6: Why is Go highlighted for "Network Efficiency" over Rust?
 
 ### Question
-What makes Go handling mentioned with "network efficiency" in the summary table, while Rust is labeled with execution speed and memory efficiency? Does Rust lack network efficiency?
+Why is Go's string handling associated with "network efficiency" in the summary table, while Rust is labeled with execution speed and memory efficiency? Does Rust lack network efficiency?
 
 ---
 

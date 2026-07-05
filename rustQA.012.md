@@ -34,7 +34,7 @@ A tuple with zero elements `()` is called the **Unit Type**. It has exactly **on
 ---
 
 #### 2. The Size-0 Enum: Uninstantiable Enums (`enum Void {}` / `Infallible`)
-An enum with **zero variants** (`enum Void {}` or standard library `std::convert::Infallible`) is completely legal. It has **zero valid values**.
+An enum with **zero variants** (`enum Void {}` or the standard library's `std::convert::Infallible`) is completely legal. It has **zero valid values**.
 
 Because it has no variants, **it is physically and logically impossible to ever create an instance of this enum at runtime!**
 
@@ -44,7 +44,7 @@ Because it has no variants, **it is physically and logically impossible to ever 
   use std::convert::TryFrom;
 
   // Converting a small u8 into a larger u32 can NEVER fail!
-  // Therefore, standard library sets the Error type to `Infallible` (0-variant enum).
+  // Therefore, the standard library sets the Error type to `Infallible` (0-variant enum).
   let result: Result<u32, std::convert::Infallible> = u32::try_from(10_u8);
   ```
   Because the compiler knows an instance of `Infallible` can never exist in the universe, it **optimizes away all error-checking branches at compile time**!
@@ -56,7 +56,7 @@ Because it has no variants, **it is physically and logically impossible to ever 
 | Type | Syntax Example | Valid Runtime Values | Primary Meaning / Use Case |
 | :--- | :--- | :---: | :--- |
 | **Size-0 Tuple** | `()` | Exactly **1** (`()`) | *"This operation completed successfully and carries 0 bytes of data."* |
-| **Size-0 Enum** | `enum Void {}` | Exactly **0** (Impossible) | *"This situation/error is mathematically impossible to ever occur."* |
+| **Size-0 Enum** | `enum Void {}` | Exactly **0** (Impossible) | *"This situation/error is mathematically impossible ever to occur."* |
 
 ---
 

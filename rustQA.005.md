@@ -82,7 +82,7 @@ impl Copy for Point {}
 ## Question 2: Enabling `Copy` on non-`Copy`able fields via `Clone`?
 
 ### Question
-Can we make up a struct of non-`Copy`able fields and then implement `Clone` to then make it `Copy` enabled?
+Can we define a struct with non-`Copy`able fields and then implement `Clone` to make it `Copy`-enabled?
 
 ---
 
@@ -138,10 +138,10 @@ When you call `let b = a.clone();`, Rust executes the `clone()` method. For a `S
 
 ---
 
-## Question 3: Traits Without User-Overrideable Methods
+## Question 3: Traits Without User-Overridable Methods
 
 ### Question
-What are all such traits that we cannot override as users with custom behavior, such as the `Copy` trait being one?
+What are all the traits that we cannot override with custom behavior, such as the `Copy` trait?
 
 ---
 

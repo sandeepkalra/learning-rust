@@ -62,7 +62,7 @@ So whenever you need to modify the innermost string: just lock it (`let mut guar
 ## Question 2: Other Interior Mutability "Specials" in Rust
 
 ### Question
-Similar to `Mutex<T>` that is designed for the "Interior Mutability" pattern, are there any other Rust specials?
+Similar to `Mutex<T>`, which is designed for the "Interior Mutability" pattern, are there any other Rust specials?
 
 ---
 
