@@ -149,10 +149,10 @@ fn main() {
 }
 ```
 
-#### 3. What if you need super-fast $O(1)$ random jumps constantly?
-Calling `.chars().nth()` scans from the beginning ($O(N)$ time). If your algorithm requires jumping back and forth to random character positions thousands of times, scanning UTF-8 repeatedly is slow.
+#### 3. What if you need super-fast O(1) random jumps constantly?
+Calling `.chars().nth()` scans from the beginning (O(N) time). If your algorithm requires jumping back and forth to random character positions thousands of times, scanning UTF-8 repeatedly is slow.
 
-In that case, convert the `String` into a **`Vec<char>`** once upfront. Because every `char` in a vector takes exactly 4 bytes, you get instant **$O(1)$ direct array indexing (`vec[4]`)**:
+In that case, convert the `String` into a **`Vec<char>`** once upfront. Because every `char` in a vector takes exactly 4 bytes, you get instant **O(1) direct array indexing (`vec[4]`)**:
 
 ```rust
 fn main() {
@@ -232,13 +232,13 @@ Go was co-designed by Ken Thompson and Rob Pike—the literal inventors of UTF-8
 * **Decoding:** When you loop over a string with `for index, char := range myString`, Go automatically decodes the 1-to-4 byte UTF-8 sequence and hands you 4-byte `rune` primitives!
 
 #### 2. Python 3 — Very Different! (PEP 393 Flexible Strings) 🐍
-Python 3 hides all byte complexity from developers. When you do `my_str[2]` in Python, it **always gives you the Nth character instantly in $O(1)$ constant time**.
+Python 3 hides all byte complexity from developers. When you do `my_str[2]` in Python, it **always gives you the Nth character instantly in O(1) constant time**.
 
 How does Python do this without breaking UTF-8? **It doesn't use UTF-8 in memory!** 
 
 Instead, Python uses an internal memory trick called **Flexible String Representation (PEP 393)**. When Python creates a string in RAM, it scans the characters and picks the smallest fixed-width array format that fits:
 
-| If the string contains... | Internal Storage | Bytes per character | $O(1)$ Indexing? |
+| If the string contains... | Internal Storage | Bytes per character | O(1) Indexing? |
 | :--- | :---: | :---: | :---: |
 | **Only ASCII** (`"hello"`) | 1-byte array | **1 byte** exactly | ✅ Yes |
 | **Accents/Cyrillic** (`"hello é"`) | 2-byte array | **2 bytes** for *every* char | ✅ Yes |

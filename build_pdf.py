@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import glob
+import shutil
 
 # Ensure required libraries are installed
 try:
@@ -13,15 +14,13 @@ except ImportError:
     import markdown
     from pygments.formatters import HtmlFormatter
 
-def build_pdf():
+def compile_pdf(md_files, output_html_name, output_pdf_name, main_title, subtitle):
     rust_dir = "/Users/kadmin/repos/gemini_apps/tt/RustTopics"
-    output_html = os.path.join(rust_dir, "sample-rusttopics.html")
-    output_pdf = os.path.join(rust_dir, "sample-rusttopics.pdf")
-    output_pdf_root = "/Users/kadmin/repos/gemini_apps/tt/sample-rusttopics.pdf"
+    output_html = os.path.join(rust_dir, output_html_name)
+    output_pdf = os.path.join(rust_dir, output_pdf_name)
+    output_pdf_root = os.path.join("/Users/kadmin/repos/gemini_apps/tt", output_pdf_name)
 
-    # Gather all markdown files sorted alphabetically
-    md_files = sorted(glob.glob(os.path.join(rust_dir, "*.md")))
-    print(f"Found {len(md_files)} markdown files to compile.")
+    print(f"\n--- Compiling {output_pdf_name} ({len(md_files)} topics) ---")
 
     md_extensions = ['fenced_code', 'codehilite', 'tables', 'toc', 'sane_lists']
     
@@ -32,7 +31,6 @@ def build_pdf():
         with open(md_file, "r", encoding="utf-8") as f:
             content = f.read()
         
-        # Clean up LaTeX math arrows and symbols so they render cleanly in PDF
         content = content.replace("$\\rightarrow$", "→")
         content = content.replace("$\\to$", "→")
         content = content.replace("$\\Rightarrow$", "⇒")
@@ -42,6 +40,12 @@ def build_pdf():
         content = content.replace("$\\Leftrightarrow$", "⇔")
         content = content.replace("\\rightarrow", "→")
         content = content.replace("\\to", "→")
+        content = content.replace("$+1.2\\%$", "+1.2%")
+        content = content.replace("$+1.2%$", "+1.2%")
+        content = content.replace("$O(1)$", "O(1)")
+        content = content.replace("$O(N)$", "O(N)")
+        content = content.replace("$O(N \\log N)$", "O(N log N)")
+        content = content.replace("$O(N log N)$", "O(N log N)")
 
         # Extract the first heading (# Title or ## Title) as the topic name
         title = os.path.basename(md_file)
@@ -85,7 +89,7 @@ def build_pdf():
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Rust Systems Programming & Architecture - Q&A Masterclass</title>
+    <title>{main_title} - {subtitle}</title>
     <style>
         @page {{
             size: A4;
@@ -338,8 +342,8 @@ def build_pdf():
 </head>
 <body>
     <div class="header-title">
-        <h1>Rust Systems Programming & Architecture</h1>
-        <h2>The Complete Technical Q&A Series (Topics 000–016)</h2>
+        <h1>{main_title}</h1>
+        <h2>{subtitle}</h2>
         <p>Compiled by Antigravity AI • DeepMind Advanced Agentic Coding</p>
     </div>
 
@@ -359,15 +363,13 @@ def build_pdf():
 
     with open(output_html, "w", encoding="utf-8") as f:
         f.write(full_html)
-    print(f"Generated HTML with light mode, wrapping fix, and clean arrows: {output_html}")
+    print(f"Generated HTML: {output_html}")
 
     # Use Google Chrome Headless to generate high-res PDF
     chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if not os.path.exists(chrome_path):
-        print("Google Chrome not found at default path. Checking fallback...")
         chrome_path = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
 
-    print(f"Using browser for PDF generation: {chrome_path}")
     cmd = [
         chrome_path,
         "--headless=new",
@@ -393,10 +395,67 @@ def build_pdf():
         weasyprint.HTML(filename=output_html).write_pdf(output_pdf)
         print(f"Successfully generated PDF with WeasyPrint: {output_pdf}")
 
-    # Also copy to root tt folder for convenience
-    import shutil
+    # Copy to root folder and handle casing
     shutil.copyfile(output_pdf, output_pdf_root)
     print(f"Copied PDF to: {output_pdf_root}")
+
+    # If compiling Tools, also handle case variants without crashing on case-insensitive filesystems
+    if "Tools" in output_pdf_name:
+        tools_cap_pdf = os.path.join(rust_dir, "Tools.Pdf")
+        tools_cap_root = "/Users/kadmin/repos/gemini_apps/tt/Tools.Pdf"
+        try:
+            shutil.copyfile(output_pdf, tools_cap_pdf)
+            shutil.copyfile(output_pdf, tools_cap_root)
+            print(f"Copied case-variant PDF to: {tools_cap_pdf} and {tools_cap_root}")
+        except shutil.SameFileError:
+            print("Case-variant PDF already points to the exact same file (case-insensitive OS).")
+    elif "RustTopics" in output_pdf_name:
+        sample_pdf = os.path.join(rust_dir, "sample-rusttopics.pdf")
+        sample_root = "/Users/kadmin/repos/gemini_apps/tt/sample-rusttopics.pdf"
+        try:
+            shutil.copyfile(output_pdf, sample_pdf)
+            shutil.copyfile(output_pdf, sample_root)
+            print(f"Copied legacy sample-rusttopics.pdf alias")
+        except shutil.SameFileError:
+            pass
+
+def build_pdf():
+    rust_dir = "/Users/kadmin/repos/gemini_apps/tt/RustTopics"
+    all_md_files = sorted(glob.glob(os.path.join(rust_dir, "*.md")))
+
+    numbered_files = []
+    tool_files = []
+
+    for f in all_md_files:
+        basename = os.path.basename(f)
+        # If filename contains digits (like .000., .001., etc.), it's a numbered topic
+        if any(c.isdigit() for c in basename):
+            numbered_files.append(f)
+        else:
+            tool_files.append(f)
+
+    numbered_files = sorted(numbered_files)
+    tool_files = sorted(tool_files)
+
+    print(f"Found {len(numbered_files)} numbered topics and {len(tool_files)} tool topics.")
+
+    # 1. Compile RustTopics.pdf (Numbered topics)
+    compile_pdf(
+        numbered_files,
+        "RustTopics.html",
+        "RustTopics.pdf",
+        "Rust Systems Programming & Architecture",
+        "The Complete Technical Q&A Series (Topics 000–019)"
+    )
+
+    # 2. Compile Tools.Pdf (Tool topics)
+    compile_pdf(
+        tool_files,
+        "Tools.html",
+        "Tools.pdf",
+        "Rust Systems Programming & Architecture",
+        "Industry-Standard Profiling, Coverage & Benchmarking Tools"
+    )
 
 if __name__ == "__main__":
     build_pdf()
