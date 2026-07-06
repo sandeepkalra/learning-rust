@@ -28,7 +28,7 @@ debug = true        # Required for line-by-line allocation stack traces!
 strip = false
 ```
 
-### Setting up the Global Allocator in Code
+### Setting Up the Global Allocator in Code
 In your `src/main.rs` (or test harness), register DHAT as the program's global allocator and initialize the profiler:
 
 ```rust

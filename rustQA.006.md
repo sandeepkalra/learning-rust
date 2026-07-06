@@ -87,11 +87,11 @@ Byte stream: [ 0x41,  0xE4, 0xB8, 0xAD,  0xF0, 0x9F, 0x9A, 0x80 ]
 ```
 
 1. **Byte 1 (`0x41` / binary `01000001`)**
-   * Starts with **`0`** $\rightarrow$ Rust knows this is a **1-byte** ASCII char (`'A'`).
+   * Starts with **`0`** -> Rust knows this is a **1-byte** ASCII char (`'A'`).
 2. **Byte 2 (`0xE4` / binary `11100100`)**
-   * Starts with **`1110`** $\rightarrow$ Rust knows this is a **3-byte** character (`'中'`). It grabs this byte plus the next two (`0xB8, 0xAD`).
+   * Starts with **`1110`** -> Rust knows this is a **3-byte** character (`'中'`). It grabs this byte plus the next two (`0xB8, 0xAD`).
 3. **Byte 5 (`0xF0` / binary `11110000`)**
-   * Starts with **`11110`** $\rightarrow$ Rust knows this is a **4-byte** emoji (`'🚀'`). It grabs this byte plus the next three (`0x9F, 0x9A, 0x80`).
+   * Starts with **`11110`** -> Rust knows this is a **4-byte** emoji (`'🚀'`). It grabs this byte plus the next three (`0x9F, 0x9A, 0x80`).
 
 #### Why Rust forbids direct integer indexing (`s[2]`)
 
@@ -190,7 +190,7 @@ Standard ASCII was created in the 1960s specifically for English text and comput
 1. **Alphabet (52 slots):** `A` to `Z` (uppercase) and `a` to `z` (lowercase).
 2. **Numbers (10 slots):** `0` through `9`.
 3. **Programming & Punctuation Symbols (33 slots):** `! @ # $ % ^ & * ( ) _ + - = { } [ ] : ; " ' < > , . ? / \ | ~ \``
-4. **Whitespace & Control codes (33 slots):** Space (` `), Newline (`\n`), Tab (`\t`), Carriage Return (`\r`), etc.
+4. **Whitespace & Control Codes (33 slots):** Space (` `), Newline (`\n`), Tab (`\t`), Carriage Return (`\r`), etc.
 
 If you are writing code, JSON, URLs, HTML tags, or standard English text, those 128 characters cover **99% of everything you type**.
 

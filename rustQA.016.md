@@ -41,7 +41,7 @@ struct Wrapper<'a, T: 'a> {
 
 ---
 
-#### 2. Functions and Methods (Input, Output, & Elision)
+#### 2. Functions and Methods (Input, Output, and Elision)
 In functions, lifetimes dictate how input reference lifespans connect to output reference lifespans.
 
 ##### A. Explicit Lifetime Annotations
@@ -54,8 +54,8 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
 
 ##### B. Lifetime Elision (Hidden Lifetimes)
 You don't always write lifetimes because the compiler applies **3 automatic elision rules**:
-1. **Each input reference gets its own unique lifetime:** `fn foo(x: &str, y: &str)` $\rightarrow$ `fn foo<'a, 'b>(x: &'a str, y: &'b str)`
-2. **If there is exactly one input lifetime, it is assigned to all output references:** `fn foo(x: &str) -> &str` $\rightarrow$ `fn foo<'a>(x: &'a str) -> &'a str`
+1. **Each input reference gets its own unique lifetime:** `fn foo(x: &str, y: &str)` -> `fn foo<'a, 'b>(x: &'a str, y: &'b str)`
+2. **If there is exactly one input lifetime, it is assigned to all output references:** `fn foo(x: &str) -> &str` -> `fn foo<'a>(x: &'a str) -> &'a str`
 3. **If it is a method taking `&self` or `&mut self`, the lifetime of `self` is assigned to all outputs:**
    ```rust
    impl<'a> BorrowedConfig<'a> {
@@ -69,7 +69,7 @@ You don't always write lifetimes because the compiler applies **3 automatic elis
 
 ---
 
-#### 3. Function Traits & Closures (`Fn`, `FnMut`, `FnOnce`) ⭐
+#### 3. Function Traits and Closures (`Fn`, `FnMut`, `FnOnce`) ⭐
 Lifetimes interact with function traits (`Fn`, `FnMut`, `FnOnce`) in two completely different ways depending on whether the reference is **passed in as an argument** or **captured from the surrounding scope**:
 
 ##### A. Higher-Rank Trait Bounds (HRTB) / Late-Bound Lifetimes (`for<'a>`)
@@ -225,7 +225,7 @@ fn main() {
 }
 ```
 
-##### Why did this fail?
+##### Why Did This Fail?
 Because we wrote `fn find_in_doc<'a>(doc: &'a str, query: &'a str) -> &'a str`, the compiler mathematically constrained `'a` to be the **shorter** of the two lifespans! Since `temp_query` died at the end of the inner block, Rust assumed `result` also died there—even though `result` actually points to `my_document`!
 
 #### 3. Example 2: How Multiple Lifetimes (`<'a, 'b>`) Fix It ✅
@@ -297,7 +297,7 @@ fn main() {
 ```
 
 ##### Summary Checklist
-1. **When to use multiple lifetimes (`<'a, 'b>`):** Whenever a function takes multiple reference arguments, but the return reference is borrowed from only *one* of them (or when neither argument is returned).
-2. **When to use the same lifetime (`<'a>`):** Only when the return reference could dynamically come from *either* argument (like `if condition { x } else { y }`), forcing both inputs to live at least as long as the return value.
-3. **Generics + Lifetimes:** You can declare as many generic types (`T, U, V`) and lifetimes (`'a, 'b, 'c`) in the same angle brackets `<'a, 'b, T, U>` as your architecture requires!
+1. **When to Use Multiple Lifetimes (`<'a, 'b>`):** Whenever a function takes multiple reference arguments, but the return reference is borrowed from only *one* of them (or when neither argument is returned).
+2. **When to Use the Same Lifetime (`<'a>`):** Only when the return reference could dynamically come from *either* argument (like `if condition { x } else { y }`), forcing both inputs to live at least as long as the return value.
+3. **Generics and Lifetimes:** You can declare as many generic types (`T, U, V`) and lifetimes (`'a, 'b, 'c`) in the same angle brackets `<'a, 'b, T, U>` as your architecture requires!
 

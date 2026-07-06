@@ -13,7 +13,7 @@ Are tuples and enums of size 0 allowed in Rust? What are the practical use cases
 Despite both being **0 bytes (`std::mem::size_of::<T>() == 0`)**, they serve completely opposite mathematical purposes:
 
 #### 1. The Size-0 Tuple: The Unit Type `()`
-A tuple with zero elements `()` is called the **Unit Type**. It has exactly **one valid value** (written as `()`).
+A tuple with zero elements `()` is called the **unit type**. It has exactly **one valid value** (written as `()`).
 
 ##### Real-world uses:
 * **Replacing C/C++ `void` as a First-Class Type:** In C/C++, `void` is a special keyword that cannot be stored in variables. In Rust, functions that don't return anything implicitly return `()`:
@@ -73,8 +73,8 @@ At the hardware memory level, they are **100% identical**: both take up **0 byte
 However, at the compiler and type-system level, they are **fundamentally different**:
 
 #### 1. Distinct Type Identity (Nominal vs. Structural Typing)
-* **`()` (Unit Type):** Is a built-in global primitive type. Every `()` anywhere in your entire codebase is the exact same type.
-* **`struct Name();`:** Creates a brand new, unique **Nominal Type**. 
+* **`()` (Unit Type):** It is a built-in global primitive type. Every `()` anywhere in your entire codebase is the exact same type.
+* **`struct Name();`:** It creates a brand new, unique **nominal type**. 
 
 Because Rust enforces strict type safety, you **cannot** pass `Name()` into a function expecting `()`, nor can you pass `()` into a function expecting `Name()`:
 
@@ -111,7 +111,7 @@ impl Iterator for Name {
 
 ---
 
-#### Why would a programmer use `struct Name()` instead of `()`? ⭐
+#### Why Would a Programmer Use `struct Name()` Instead of `()`? ⭐
 
 Because `struct Name()` gives you a unique, distinct type name while costing **0 bytes of RAM**, senior Rust developers use it for two powerful patterns:
 
@@ -127,5 +127,5 @@ fn delete_database(token: AdminToken) {
 ```
 If a user only has a `GuestToken()`, the compiler will **block them at compile time** from calling `delete_database`. Yet, because `AdminToken` is 0 bytes, passing it around costs **zero hardware runtime overhead**!
 
-##### B. Stateless Action Handlers / Strategies
+##### B. Stateless Action Handlers and Strategies
 If you need to pass a stateless algorithm or configuration struct into a generic function (`fn run<T: Strategy>(handler: T)`), passing a 0-byte struct (`struct FastStrategy();`) lets the compiler inline all methods with zero memory allocation.

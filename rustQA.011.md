@@ -1,4 +1,4 @@
-# Rust Q&A: Structs vs C++ Classes, Virtual Dispatch (`dyn Trait`), and Code Bloat
+# Rust Q&A: Structs vs. C++ Classes, Virtual Dispatch (`dyn Trait`), and Code Bloat
 
 ## Question 1: Are C++ classes and Rust structs similar?
 
@@ -48,7 +48,7 @@ Both languages use deterministic RAII (Resource Acquisition Is Initialization) t
 
 ##### B. Move vs. Copy Semantics by Default
 * **In C++:** Doing `Player b = a;` **copies** the object by default (triggering copy constructors).
-* **In Rust:** Doing `let b = a;` **moves ownership** by default! Variable `a` becomes permanently disabled and illegal to use unless you explicitly implement the `Copy` or `Clone` trait.
+* **In Rust:** Doing `let b = a;` **moves ownership** by default! Variable `a` becomes invalidated and unusable unless you explicitly implement the `Copy` or `Clone` trait.
 
 ##### C. Separation of Data and Behavior
 In C++, data fields and methods live inside the exact same `{ ... }` class block. In Rust, data (`struct`) and behavior (`impl`) are strictly separated. You can even write multiple separate `impl` blocks for the same struct across different modules!
@@ -95,7 +95,7 @@ zoo.push_back(std::make_unique<Dog>());
 zoo.push_back(std::make_unique<Cat>());
 
 for (auto& animal : zoo) {
-    animal->speak(); // Virtual dispatch via hidden vptr!
+    animal->speak(); // Virtual dispatch via a hidden vptr!
 }
 ```
 
@@ -124,17 +124,17 @@ fn main() {
     zoo.push(Box::new(Cat));
 
     for animal in zoo.iter() {
-        animal.speak(); // Dynamic dispatch via Vtable!
+        animal.speak(); // Dynamic dispatch via a vtable!
     }
 }
 ```
 
 #### How Virtual Tables (Vtables) Differ Under the Hood 🔍
-Both C++ and Rust use Vtables for runtime dispatch, but they store the Vtable pointer differently in memory:
-* **In C++ (Embedded `vptr`):** Whenever a class has a `virtual` method, C++ embeds a hidden 8-byte pointer (`vptr`) inside the physical object layout itself. If you create 1,000 `Dog` objects, every single object carries an 8-byte overhead pointer to the `Dog` Vtable.
-* **In Rust (Fat Pointers):** Rust structs are strictly pure data—they **never** embed hidden pointers inside your struct! Instead, when you create a trait object pointer like `&dyn Animal` or `Box<dyn Animal>`, the pointer itself becomes a **2-word Fat Pointer**:
-  1. **Word 1:** Data pointer pointing to the raw `Dog` struct.
-  2. **Word 2:** Vtable pointer pointing to the `Animal` virtual method table for `Dog`.
+Both C++ and Rust use vtables for runtime dispatch, but they store the vtable pointer differently in memory:
+* **In C++ (Embedded `vptr`):** Whenever a class has a `virtual` method, C++ embeds a hidden 8-byte pointer (`vptr`) inside the physical object layout itself. If you create 1,000 `Dog` objects, every single object carries an 8-byte overhead pointer to the `Dog` vtable.
+* **In Rust (Fat Pointers):** Rust structs are strictly pure data—they **never** embed hidden pointers inside themselves! Instead, when you create a trait object pointer like `&dyn Animal` or `Box<dyn Animal>`, the pointer itself becomes a **2-word Fat Pointer**:
+  1. **Word 1:** A data pointer pointing to the raw `Dog` struct.
+  2. **Word 2:** A vtable pointer pointing to the `Animal` virtual method table for `Dog`.
 
 ---
 
@@ -151,13 +151,13 @@ Similar to C++ virtual dispatch, is there a runtime cost to `dyn Trait`? Also, c
 **Yes! `dyn Trait` incurs the exact same runtime performance costs as C++ `virtual` functions.**
 
 When you call a method on a `dyn Trait` object, you pay two specific runtime penalties:
-1. **Vtable Lookup Overhead (Pointer Indirection):** To call `animal.speak()`, the CPU cannot jump directly to the function code. It must first read the Vtable pointer from the fat pointer, look up the address of `speak()` inside the table, and then jump to that memory location.
+1. **Vtable Lookup Overhead (Pointer Indirection):** To call `animal.speak()`, the CPU cannot jump directly to the function code. It must first read the vtable pointer from the fat pointer, look up the address of `speak()` inside the table, and then jump to that memory location.
 2. **Loss of Inlining & Compiler Optimizations:** Because the exact function being called is not known until runtime, the compiler cannot inline the method body. This prevents optimizations like loop unrolling and dead-code elimination across the function call boundary.
 
-##### Why Rust prefers Static Dispatch by default ⭐
+##### Why Rust Prefers Static Dispatch by Default ⭐
 In C++, virtual polymorphism is often the default. In Rust, runtime dispatch (`dyn Trait`) is strictly opt-in. 
 
-By default, Rust programmers use **Generics (`impl Trait` / `<T: Trait>`)** for compile-time static dispatch (Monomorphization). Generics produce specialized machine code with **zero vtables, zero runtime overhead, and 100% inlining**! You only pay for `dyn Trait` when you genuinely need heterogeneous collections (like storing different types inside the same `Vec`).
+By default, Rust programmers use **generics (`impl Trait` / `<T: Trait>`)** for compile-time static dispatch (monomorphization). Generics produce specialized machine code with **zero vtables, zero runtime overhead, and 100% inlining**! You only pay for `dyn Trait` when you genuinely need heterogeneous collections (like storing different types inside the same `Vec`).
 
 #### 2. Can one `impl` block implement multiple traits?
 **No, they must be implemented one by one!** Every trait requires its own distinct `impl TraitName for StructName { ... }` block.
@@ -188,7 +188,7 @@ impl std::fmt::Display for Dog {
 
 ---
 
-## Question 4: Code Bloat in Generics vs Trait Objects
+## Question 4: Code Bloat in Generics vs. Trait Objects
 
 ### Question
 For each trait implementation using generics, is there an issue of code bloat that can potentially happen if the generic is instantiated with many concrete types?
@@ -196,7 +196,7 @@ For each trait implementation using generics, is there an issue of code bloat th
 ---
 
 ### Answer
-**Yes, absolutely!** That phenomenon is called **Code Bloat (or Binary Bloat)** via **Monomorphization**, and it is the exact trade-off between Generics and `dyn Trait`.
+**Yes, absolutely!** That phenomenon is called **Code Bloat (or Binary Bloat)** via **Monomorphization**, and it is the exact trade-off between generics and `dyn Trait`.
 
 Let's compare how both strategies impact your compiled binary size and CPU performance:
 
@@ -226,7 +226,7 @@ If your codebase calls `process_animal` with **50 different types**, the Rust co
 Because the function only operates on a standardized 2-word fat pointer (`data_ptr` + `vtable_ptr`), the CPU executes the exact same machine code instructions whether you pass a `Dog` or a `Cat`.
 
 * **Pros:** **Zero Code Bloat!** Tiny executable binary size and super fast compilation times.
-* **Cons:** Slight runtime CPU overhead due to Vtable pointer lookups and loss of function inlining.
+* **Cons:** Slight runtime CPU overhead due to vtable pointer lookups and loss of function inlining.
 
 ---
 

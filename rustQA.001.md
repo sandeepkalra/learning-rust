@@ -60,7 +60,7 @@ What would have happened in a multi-threaded scenario where `m` and `j` are on d
 ---
 
 ### Answer
-If `m` and `j` were on different threads, **Rust's compiler would prevent data races at compile time**. You would either get a compile error, or (if properly synchronized) the exact same safe outcome where `m` remains unaffected.
+If `m` and `j` were on different threads, **Rust's compiler would prevent data races at compile time**. You would either get a compile error or (if properly synchronized) the exact same safe outcome where `m` remains unaffected.
 
 Here is what happens depending on how you try to write it:
 
@@ -90,7 +90,7 @@ fn main() {
 ```
 
 **Why it fails to compile:**
-Rust enforces the fundamental borrowing rule across all threads: **You can have either any number of immutable references (`&T`) OR exactly one mutable reference (`&mut T`), but never both at the same time.** 
+Rust enforces the fundamental borrowing rule across all threads: **You can have either any number of immutable references (`&T`) or exactly one mutable reference (`&mut T`), but never both at the same time.** 
 
 If one thread could mutate `j`'s heap buffer (freeing old memory and reallocating `"NEW!"`) at the exact millisecond another thread was reading `j.trim()`, it would cause a **Use-After-Free crash or Segmentation Fault** (common in C/C++). Rust makes this impossible at compile time.
 

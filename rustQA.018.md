@@ -8,7 +8,7 @@ In Rust, is there a way to print when internal heap allocations and deallocation
 ---
 
 ### Answer
-Yes! In Rust, you can intercept and print **every single heap allocation and deallocation (free)** along with their exact sizes and alignment by writing a **Custom Global Allocator**. 
+Yes! In Rust, you can intercept and print **every single heap allocation and deallocation (free)** along with their exact sizes and alignment by writing a **custom global allocator**. 
 
 Furthermore, because Rust guarantees memory safety but **not** leak freedom (e.g., reference counting cycles with `Rc`/`Arc` or `Box::leak` can leak memory), there are powerful industry-standard tools to run **leak tests** on your code.
 
@@ -16,7 +16,7 @@ Here is the complete guide to printing heap activity and detecting memory leaks 
 
 ---
 
-#### 1. How to Print Heap Allocations & Frees
+#### 1. How to Print Heap Allocations and Frees
 Rust delegates all heap allocations (`Box`, `Vec`, `String`, `HashMap`, etc.) to a global allocator. You can intercept these calls by defining a wrapper struct around the system allocator (`std::alloc::System`), implementing the **`GlobalAlloc`** trait, and registering it with `#[global_allocator]`.
 
 ##### ⚠️ The Re-entrancy Hazard (Infinite Recursion Trap!)

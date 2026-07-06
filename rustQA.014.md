@@ -1,4 +1,4 @@
-# Rust Q&A: Trait Methods, Inherent vs Trait `impl` Blocks, Cross-Calling, and Visibility
+# Rust Q&A: Trait Methods, Inherent vs. Trait `impl` Blocks, Cross-Calling, and Visibility
 
 ## Question 1: Can one trait in Rust have multiple methods (including default implementations)?
 
@@ -93,7 +93,7 @@ fn main() {
 ## Question 2: How does `impl Trait for Struct` differ from a regular `impl Struct` block?
 
 ### Question
-For `impl <trait>` blocks on a struct, how are they different from a usual inherent `impl` block on a struct? At first glance, it seems just like a named `impl` block tied to a struct.
+How do `impl <trait>` blocks on a struct differ from usual inherent `impl` blocks on a struct? At first glance, it seems just like a named `impl` block tied to a struct.
 
 ---
 
@@ -103,9 +103,9 @@ At the surface level, writing `impl Vehicle for Car` does look just like a named
 However, at the architectural and compiler level, **trait `impl` blocks give your struct four massive superpowers that regular inherent `impl Car` blocks cannot provide**:
 
 #### 1. Polymorphism & Generics (The Interface Contract) ⭐
-If you write methods in a regular `impl Car` block, those methods are locked **only** to `Car`. You cannot write a function that accepts *"any struct that happens to have a `drive()` method"* because Rust does not do duck-typing.
+If you write methods in a regular `impl Car` block, those methods are locked **only** to `Car`. You cannot write a function that accepts *"any struct that happens to have a `drive()` method"* because Rust does not do duck typing.
 
-By implementing a Trait (`impl Vehicle for Car`), you sign an explicit **Interface Contract**. This allows you to write generic algorithms that operate on 1,000 completely unrelated structs:
+By implementing a trait (`impl Vehicle for Car`), you sign an explicit **interface contract**. This allows you to write generic algorithms that operate on 1,000 completely unrelated structs:
 
 ```rust
 // Works on Car, Bicycle, Airplane, or anything implementing Vehicle!
@@ -146,15 +146,15 @@ Methods defined in `impl Vehicle for Car` are **hidden** unless the caller expli
 If two third-party libraries both add a `.format()` method to your struct via different traits, they won't collide! You simply import the exact trait whose `.format()` method you want to use in that module.
 
 #### 4. Strict Signature Conformance
-* In a regular `impl Car` block, you have 100% freedom to add arguments, change return types, or rename functions anytime.
-* In a trait `impl Vehicle for Car` block, the compiler strictly enforces that your function signatures match the trait blueprint byte-for-byte.
+* In a regular `impl Car` block, you have 100% freedom to add arguments, change return types, or rename functions at any time.
+* In a trait `impl Vehicle for Car` block, the compiler strictly enforces that your function signatures match the trait blueprint exactly.
 
 ---
 
 ## Question 3: Can trait methods directly call regular struct methods (and vice versa)?
 
 ### Question
-Can trait block methods directly call `object.method()` from a regular `impl struct` block? Is vice versa also allowed?
+Can trait block methods directly call `object.method()` from a regular `impl struct` block? Is the reverse also allowed?
 
 ---
 
@@ -179,7 +179,7 @@ impl Car {
     pub fn start_engine(&self) {
         println!("Engine started for {}", self.brand);
 
-        // ✅ VICE VERSA: Regular method directly calling a Trait method!
+        // ✅ VICE VERSA: Regular method directly calling a trait method!
         self.honk_horn(); 
     }
 
@@ -193,7 +193,7 @@ impl Vehicle for Car {
     fn honk_horn(&self) {
         println!("Beep beep!");
 
-        // ✅ DIRECTION 1: Trait method directly calling a Regular method!
+        // ✅ DIRECTION 1: Trait method directly calling a regular method!
         self.check_fuel(); 
     }
 }
@@ -218,11 +218,11 @@ Will the cross-calling example work if the methods do not have the `pub` keyword
 ---
 
 ### Answer
-**Yes! If all of this code is in the same file/module, it will work 100% fine without the `pub` keyword.**
+**Yes! If all of this code is in the same file/module, it will work perfectly without the `pub` keyword.**
 
 In Rust, items without `pub` are private by default—meaning they are **visible only inside their current file/module** (and any sub-modules inside it). Because `main()`, `Car`, and the `impl` blocks are all in the same module, they have full access to each other's private methods!
 
-#### What happens if the code is split across different files/modules? 🔍
+#### What Happens If the Code Is Split Across Different Files or Modules? 🔍
 
 If you move `Car` into a separate module (like `mod models;`), removing `pub` changes things:
 
@@ -248,14 +248,14 @@ Why? Because **trait methods automatically inherit the visibility of the `trait`
 ## Question 5: Can a trait method be restricted from calling struct fields or methods?
 
 ### Question
-Can a trait method be restricted in any way from accessing object.fields or calling `object.methods()`?
+Can a trait method be restricted in any way from accessing an object's fields or calling its methods?
 
 ---
 
 ### Answer
 **Yes!** A trait method faces **three major compiler restrictions** when trying to access struct fields or call struct methods:
 
-#### 1. The Architectural Restriction: Default Methods inside `trait Trait` CANNOT access struct fields! ⭐
+#### 1. The Architectural Restriction: Default Methods Inside `trait Trait` Cannot Access Struct Fields! ⭐
 When writing a **default method** inside a raw `trait` definition block, you **cannot** access any struct fields (`self.field`).
 
 ```rust
@@ -270,7 +270,7 @@ trait Vehicle {
 ##### Why?
 A trait is a pure interface contract—it has **no data fields whatsoever**. At the point where `trait Vehicle` is defined, the compiler has no idea whether the implementing type (`Self`) will be a struct with a `brand` field, an enum, or even a primitive `i32`!
 
-###### How to work around this:
+###### How to Work Around This:
 If a default method needs data, you must force the struct to expose that data via a **required getter method**:
 
 ```rust
@@ -284,13 +284,13 @@ trait Vehicle {
 }
 ```
 
-#### 2. The Privacy Restriction: Module Visibility across files
+#### 2. The Privacy Restriction: Module Visibility Across Files
 When you write `impl Vehicle for Car`, whether you can access `self.field` or private `self.method()` depends entirely on **where the `impl` block is located**:
 
 * **If `impl Vehicle for Car` is in the same module as `Car`:** It has full access to every private field and private method on `Car`.
-* **If `impl Vehicle for Car` is in a different module/crate:** It is strictly restricted by Rust's privacy rules! If `Car.engine_speed` is private, the trait implementation block **cannot** read or write `self.engine_speed`, nor can it call private helper methods.
+* **If `impl Vehicle for Car` is in a different module or crate:** It is strictly restricted by Rust's privacy rules! If `Car.engine_speed` is private, the trait implementation block **cannot** read or write `self.engine_speed`, nor can it call private helper methods.
 
-#### 3. The Mutability Restriction (`&self` vs `&mut self`)
+#### 3. The Mutability Restriction (`&self` vs. `&mut self`)
 If the trait blueprint defines a method as taking an immutable reference (`&self`), you are strictly forbidden from modifying struct fields or calling mutable methods (`&mut self`) inside your implementation:
 
 ```rust
@@ -325,7 +325,7 @@ Show how `impl Vehicle for Car` can be placed inside a completely different modu
 ---
 
 ### Answer
-Here is a complete, runnable example showing how `impl Vehicle for Car` can live inside a completely **different module (`mod garage`) from** the struct definition (`mod models`).
+Here is a complete, runnable example showing how `impl Vehicle for Car` can live inside a completely **different module (`mod garage`)** from the struct definition (`mod models`).
 
 Notice how placing the trait implementation in a different module immediately **restricts it from accessing private fields or private methods**!
 
@@ -395,7 +395,7 @@ fn main() {
 }
 ```
 
-##### Why split trait implementations into separate modules? 💡
+##### Why Split Trait Implementations Into Separate Modules? 💡
 Placing `impl Trait for Struct` in separate modules (or even separate crate files like `src/implementations.rs`) is very common in large Rust codebases for:
 1. **Feature Gating (`#[cfg(feature = "json")]`)**: You can put `impl Serialize for Car` in a separate `mod json;` file that only compiles when the user enables JSON support.
 2. **Clean Separation of Concerns**: Keeping raw data definitions (`models.rs`) separate from heavy algorithmic trait implementations (`rendering.rs`, `physics.rs`).

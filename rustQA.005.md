@@ -127,7 +127,7 @@ It comes down to the fundamental difference between how `Copy` and `Clone` work 
 ##### 1. `Copy` is implicit and purely bit-for-bit (`memcpy`)
 When you write `let b = a;` for a `Copy` type, the compiler **never executes any custom code or calls your `clone()` function**. It simply copies the raw bits sitting on the CPU stack into the new variable.
 
-If Rust allowed `Copy` on a struct with a `String`, a bit-for-bit copy of the stack struct would duplicate the `String`'s internal memory pointer address (`ptr`). You would end up with two separate `User` structs pointing to the **exact same buffer on the heap**. When both variables go out of scope, Rust would try to deallocate the same heap memory twice (**Double-Free Crash / Security Vulnerability**).
+If Rust allowed `Copy` on a struct with a `String`, a bit-for-bit copy of the stack struct would duplicate the `String`'s internal memory pointer address (`ptr`). You would end up with two separate `User` structs pointing to the **exact same buffer on the heap**. When both variables go out of scope, Rust would try to deallocate the same heap memory twice (**double-free crash or security vulnerability**).
 
 ##### 2. `Clone` is explicit and runs custom code
 When you call `let b = a.clone();`, Rust executes the `clone()` method. For a `String`, this allocates fresh memory on the heap and deep-copies the string characters into a new buffer. Because this operation can be slow or expensive, Rust requires you to type `.clone()` explicitly so you are always aware when a heap allocation happens.
@@ -146,7 +146,7 @@ What are all the traits that we cannot override with custom behavior, such as th
 ---
 
 ### Answer
-In Rust, traits that you cannot override with custom function behavior fall into two major categories: **Marker / Auto Traits** (like `Copy`, which have no methods to override) and **Compiler-Exclusive / Lang Traits** (which the compiler reserves strictly for itself).
+In Rust, traits that you cannot override with custom function behavior fall into two major categories: **Marker and Auto Traits** (like `Copy`, which have no methods to override) and **Compiler-Exclusive and Lang Traits** (which the compiler reserves strictly for itself).
 
 Here is the complete list of special traits where you cannot write custom execution logic:
 
@@ -163,7 +163,7 @@ These traits have an empty body (`{}`). You cannot write custom code for them be
 
 * **`Sync`** *(Auto Trait)*
   * Tells the compiler that it is safe for multiple threads to hold immutable references (`&T`) to this type simultaneously (`T is Sync` if and only if `&T is Send`).
-  * Automatically implemented by the compiler. (Things like `RefCell<T>` opt out of `Sync`).
+  * Automatically implemented by the compiler. (Things like `RefCell<T>` opt out of `Sync`.)
 
 * **`Unpin`** *(Auto Trait)*
   * Tells the compiler that this type can be safely moved around in memory after being created.

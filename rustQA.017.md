@@ -1,4 +1,4 @@
-# Rust Q&A: Why You Can Modify Elements But Cannot Push/Pop During Iteration
+# Rust Q&A: Why You Can Modify Elements But Cannot Push or Pop During Iteration
 
 ## Question: How does the borrow checker allow modifying mutable entries without allowing vector structural changes?
 
@@ -8,7 +8,7 @@ In Rust, during iteration, how does the borrow checker work such that I can modi
 ---
 
 ### Answer
-In Rust, the distinction between **mutating the *contents* of an element** versus **adding/removing elements from the container** lies at the very heart of memory safety. 
+In Rust, the distinction between **mutating the *contents* of an element** versus **adding or removing elements from the container** lies at the very heart of memory safety. 
 
 Here is a deep dive into how the borrow checker enforces this rule, the physical memory hazards it prevents, and the architectural magic under the hood.
 
@@ -20,7 +20,7 @@ When you iterate over a vector mutably using `for item in &mut vec` (which desug
 ##### What happens at compile time?
 1. **The Iterator Locks the Container:** When you call `vec.iter_mut()`, the iterator takes an **exclusive mutable borrow of the entire vector** (`&'a mut Vec<T>`).
 2. **The Borrow Checker's Golden Rule:** While an object is borrowed mutably, **no other borrows or direct accesses to that object are allowed** until the borrow ends.
-3. **Why `push` / `pop` fail:** Methods like `vec.push(...)`, `vec.pop()`, and `vec.remove(...)` require calling `Vec::push(&mut self)`. But `vec` is **already borrowed** by the iterator! Trying to borrow `vec` again triggers compiler error **`E0499: cannot borrow vec as mutable more than once at a time`**.
+3. **Why `push` and `pop` Fail:** Methods like `vec.push(...)`, `vec.pop()`, and `vec.remove(...)` require calling `Vec::push(&mut self)`. But `vec` is **already borrowed** by the iterator! Trying to borrow `vec` again triggers compiler error **`E0499: cannot borrow vec as mutable more than once at a time`**.
 
 ```rust
 let mut numbers = vec![1, 2, 3];
@@ -37,7 +37,7 @@ for item in &mut numbers {
 
 ---
 
-#### 2. The Physical Memory Hazard: Why did Rust forbid this?
+#### 2. The Physical Memory Hazard: Why Did Rust Forbid This?
 Why can't Rust just let us push elements while iterating? In languages like C++, modifying a container while iterating over it is a notorious cause of **Undefined Behavior (UB)** and **Segmentation Faults**, known as **Iterator Invalidation**.
 
 ##### The Reallocation Disaster (The "Pointer to Nowhere")
@@ -77,7 +77,7 @@ By forbidding structural modifications (`push`/`pop`/`insert`/`remove`) during i
 
 ---
 
-#### 3. Why is mutating an entry (`&mut T`) allowed and safe?
+#### 3. Why Is Mutating an Entry (`&mut T`) Allowed and Safe?
 When you modify an existing element via `*item = 99`, you are writing directly to the **existing memory address** of that specific element inside the allocated heap buffer.
 
 * **No Structural Change:** Modifying a value does not change the vector's `length` or `capacity`.
@@ -86,7 +86,7 @@ When you modify an existing element via `*item = 99`, you are writing directly t
 
 ---
 
-#### 4. Under the Hood: How `iter_mut()` splits borrows without violating rules
+#### 4. Under the Hood: How `iter_mut()` Splits Borrows Without Violating Rules
 You might wonder: *"If Rust forbids multiple mutable borrows of the same data, how can `iter_mut()` yield `&mut T` to element 0, and then `&mut T` to element 1?"*
 
 If you tried to write a normal loop indexing into a vector and storing multiple mutable references simultaneously, the borrow checker would stop you:

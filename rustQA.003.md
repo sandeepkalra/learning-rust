@@ -55,7 +55,7 @@ However, **`Mutex<T>` is special.** It is designed with the **Interior Mutabilit
 1. When Thread 1 calls `j.lock()`, the `Mutex` checks its runtime lock state.
 2. Because the `Mutex` guarantees that **only one thread at a time** can ever hold the lock, Rust safely allows `.lock()` (called on an immutable `&Mutex`) to hand you back an exclusive mutable reference (`&mut String`) to the inside.
 
-So whenever you need to modify the innermost string: just lock it (`let mut guard = j.lock().unwrap();`), modify `guard` like a normal `String`, and let the guard drop!
+So whenever you need to modify the innermost string, just lock it (`let mut guard = j.lock().unwrap();`), modify `guard` like a normal `String`, and let the guard drop!
 
 ---
 
@@ -93,7 +93,7 @@ user.login_count.set(user.login_count.get() + 1); // Updated without `mut user`!
 ##### B. `RefCell<T>` — The single-threaded cousin of `Mutex<T>`
 * **How it works:** Enforces Rust’s borrow rules (`&T` vs `&mut T`) at **runtime** instead of **compile time**. You call `.borrow()` for read-only access or `.borrow_mut()` for mutable access.
 * **The Catch:** If you break the borrow rules (e.g., calling `.borrow_mut()` twice at the exact same time), your program will **panic (crash) at runtime** instead of failing at compile time.
-* **Best used for:** Complex data structures like Trees, Graphs, or GUI callbacks where multiple components need mutable handles (`Rc<RefCell<T>>`).
+* **Best used for:** Complex data structures like trees, graphs, or GUI callbacks where multiple components need mutable handles (`Rc<RefCell<T>>`).
 
 ---
 
@@ -102,7 +102,7 @@ user.login_count.set(user.login_count.get() + 1); // Updated without `mut user`!
 In addition to `Mutex<T>`, Rust provides specialized synchronization structures for multi-threading:
 
 ##### A. `RwLock<T>` (Read-Write Lock)
-* **How it works:** A `Mutex` blocks *everyone* else when someone holds the lock. A `RwLock` is smarter: it allows **any number of simultaneous readers** (`.read().unwrap()`), OR exactly **one exclusive writer** (`.write().unwrap()`).
+* **How it works:** A `Mutex` blocks *everyone* else when someone holds the lock. A `RwLock` is smarter: it allows **any number of simultaneous readers** (`.read().unwrap()`) or exactly **one exclusive writer** (`.write().unwrap()`).
 * **Best used for:** Data that is read constantly by many threads but modified very rarely (like configuration settings or in-memory caches).
 
 ##### B. Atomic Types (`AtomicUsize`, `AtomicBool`, etc.)

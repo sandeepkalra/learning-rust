@@ -445,7 +445,7 @@ def build_pdf():
         "RustTopics.html",
         "RustTopics.pdf",
         "Rust Systems Programming & Architecture",
-        "The Complete Technical Q&A Series (Topics 000–019)"
+        "The Complete Technical Q&A Series (Topics 000–020)"
     )
 
     # 2. Compile Tools.Pdf (Tool topics)
@@ -454,7 +454,7 @@ def build_pdf():
         "Tools.html",
         "Tools.pdf",
         "Rust Systems Programming & Architecture",
-        "Industry-Standard Profiling, Coverage & Benchmarking Tools"
+        "Industry-Standard Profiling, Static Analysis & Benchmarking Tools"
     )
 
 if __name__ == "__main__":

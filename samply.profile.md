@@ -57,7 +57,7 @@ samply record ./target/release/my_app
 ```
 
 ### What Happens When Execution Ends?
-1. `samply` compresses the recorded stack samples into a local profile profile.
+1. `samply` compresses the recorded stack samples into a local profile file.
 2. It spins up a temporary local web server (e.g., on `http://127.0.0.1:3000`).
 3. It **automatically opens your default web browser** to `https://profiler.firefox.com` and loads the profile directly from your local machine!
    * *Privacy Note:* All data is processed 100% locally inside your browser; no profiling data is ever uploaded to Mozilla or external servers!
@@ -70,7 +70,7 @@ The Firefox Profiler UI is arguably the most powerful open-source visualization 
 
 ### Key Features to Explore:
 1. **Thread Timeline (Top Panel):** Shows every OS thread spawned by your Rust app (e.g., `tokio-runtime-worker-0`, `rayon-core-1`). You can see exactly when threads are executing CPU work, sleeping, or blocked on locks!
-2. **Call Tree (Bottom Left):** A hierarchical breakdown of total execution time per function, sorted by **Self Time** (time spent directly in the function) versus **Total Time** (time spent in function + its children).
+2. **Call Tree (Bottom Left):** A hierarchical breakdown of total execution time per function, sorted by **Self Time** (time spent directly in the function) versus **Total Time** (time spent in the function and its children).
 3. **Flame Graph Tab:** An interactive FlameGraph similar to `cargo-flamegraph`, but with instant search, filtering by thread, and time-slice selection.
 4. **Stack Chart / Timeline Zoom:** Highlight any time range in the top timeline (e.g., during a latency spike or initialization drop) to filter the Call Tree and Flame Graph exclusively to that exact millisecond window!
 

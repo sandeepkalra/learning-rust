@@ -41,7 +41,7 @@ Why does the second program fail?
 ### Answer
 This is one of the most classic and enlightening examples in Rust! 
 
-The fundamental difference between the two programs comes down to **whether the slice bytes were copied into a brand new allocation immediately, or whether a variable is still holding a live reference (`&str`) pointing directly into the original memory across a mutation attempt.**
+The fundamental difference between the two programs comes down to **whether the slice bytes are copied into a brand-new allocation immediately, or whether a variable is still holding a live reference (`&str`) pointing directly into the original memory across a mutation attempt.**
 
 Let's compare what happens in memory step-by-step:
 
@@ -79,7 +79,7 @@ println!("msg:{m} , {j} ");
 ##### What would happen if Rust allowed `m.clear()` here?
 1. `j` (`&str`) is pointing directly at the letters `"hello"` sitting inside `m`'s heap memory buffer.
 2. If `m.clear()` were allowed to run, it would wipe out `m`'s text data (setting the length to `0`).
-3. Now `j` would be a **dangling pointer** pointing to wiped/freed memory! When `println!` tried to print `j`, your program would either crash with a Segmentation Fault or output garbage characters.
+3. Now `j` would be a **dangling pointer** pointing to wiped/freed memory! When `println!` tried to print `j`, your program would either crash with a segmentation fault or output garbage characters.
 
 To prevent this memory bug, Rust enforces its golden borrow rule: **You cannot mutate a variable (`m.clear()`) while an immutable reference (`j`) pointing to its internal data is still actively being used.**
 
@@ -110,7 +110,7 @@ The documentation of `String::trim(&self)` says that it returns a slice (`&str`)
 ### Answer
 **You are 100% right:** both functions return the exact same type (a string slice `&str`). There is **no difference** between what `j.trim()` and `first_word(&m)` return!
 
-The difference is **what you did with that returned slice immediately afterward**.
+The difference is **what you do with that returned slice immediately afterward**.
 
 Look at where the slice goes in each program:
 

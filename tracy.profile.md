@@ -94,9 +94,9 @@ The Tracy GUI provides deep insight into real-time system behavior:
 
 ### Key Features in the Tracy GUI:
 1. **Frame Time Graph (Top Bar):** Shows a bar chart of every frame's duration in milliseconds. Spikes above `16.6 ms` indicate dropped frames (falling below 60 FPS)! Click on any spike to inspect that exact frame!
-2. **Timeline Tracks (Center):** Displays horizontal tracks for every OS thread and async worker. You will see nested colored boxes representing your `#[instrument]` function spans (`render_game_frame` $\rightarrow$ `perform_heavy_database_query`).
+2. **Timeline Tracks (Center):** Displays horizontal tracks for every OS thread and async worker. You will see nested colored boxes representing your `#[instrument]` function spans (`render_game_frame` -> `perform_heavy_database_query`).
 3. **Lock Contention Tracking:** Tracy automatically highlights Mutex/RwLock waiting times in red, showing you exactly which thread was holding the lock and causing another thread to stall!
-4. **Memory Profiling Tab:** If configured with Tracy's global allocator wrapper, displays live graphs of heap memory fragmentation and total allocated blocks over time.
+4. **Memory Profiling Tab:** If configured with Tracy's global allocator wrapper, this tab displays live graphs of heap memory fragmentation and total allocated blocks over time.
 
 ### Best Practices:
 * **Feature Gating in Production:** Keep Tracy instrumentation zero-cost in production by wrapping the subscriber initialization behind a Cargo feature flag:

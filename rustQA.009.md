@@ -12,16 +12,16 @@ What does Rust Deref Coercion mean? Can you show an example of `&String` to `&st
 
 It happens automatically whenever you pass a reference into a function or method argument.
 
-#### How it works under the hood
+#### How It Works Under the Hood
 If a type `T` implements the `std::ops::Deref` trait defining `Target = U`, then whenever the compiler sees `&T` being passed to a function that expects `&U`, Rust automatically inserts `&*` or `.deref()` behind the scenes to convert it.
 
 Without Deref Coercion, Rust code would be cluttered with noisy explicit pointer conversions!
 
 ---
 
-#### Example 1: String Coercion (`&String` $\rightarrow$ `&str`)
+#### Example 1: String Coercion (`&String` -> `&str`)
 
-Because standard library `String` implements `Deref<Target = str>`, you can pass a `&String` to any function expecting a slice `&str`:
+Because the standard library `String` type implements `Deref<Target = str>`, you can pass a `&String` to any function expecting a slice `&str`:
 
 ```rust
 fn print_greeting(word: &str) {
@@ -35,14 +35,14 @@ fn main() {
     // Rust automatically coerces `&String` -> `&str` via Deref!
     print_greeting(&owned_string); 
     
-    // Without deref coercion, you would have been forced to type:
+    // Without Deref Coercion, you would have been forced to type:
     // print_greeting(&owned_string[..]); or print_greeting(owned_string.as_str());
 }
 ```
 
 ---
 
-#### Example 2: Non-String Example 1 (`&Vec<T>` $\rightarrow$ `&[T]`)
+#### Example 2: Non-String Example 1 (`&Vec<T>` -> `&[T]`)
 
 Because `Vec<T>` implements `Deref<Target = [T]>`, you can pass a reference to a vector directly to any function that expects a generic slice:
 
@@ -101,37 +101,37 @@ What are all the different Deref Coercions in Rust? Is the list above exhaustive
 ### Answer
 In Rust, **any type** (in the standard library or your own custom structs) that implements the `std::ops::Deref` or `std::ops::DerefMut` trait automatically unlocks Deref Coercion.
 
-Here is the complete, comprehensive breakdown of how Deref Coercions work across Rust:
+Here is a comprehensive breakdown of how Deref Coercions work across Rust:
 
 #### 1. The 3 Compiler Coercion Rules
 When Rust sees a reference mismatch at a function boundary, it will apply up to three coercion transformations:
-1. **Immutable $\rightarrow$ Immutable:** `&T` to `&U` when `T: Deref<Target = U>`
-2. **Mutable $\rightarrow$ Mutable:** `&mut T` to `&mut U` when `T: DerefMut<Target = U>`
-3. **Mutable $\rightarrow$ Immutable:** `&mut T` to `&U` when `T: Deref<Target = U>` *(You can pass a mutable reference `&mut String` to a function expecting an immutable `&str`!)*
-*(Note: Rust will NEVER coerce `&T` to `&mut U`, as that would violate borrow checker safety).*
+1. **Immutable -> Immutable:** `&T` to `&U` when `T: Deref<Target = U>`
+2. **Mutable -> Mutable:** `&mut T` to `&mut U` when `T: DerefMut<Target = U>`
+3. **Mutable -> Immutable:** `&mut T` to `&U` when `T: Deref<Target = U>` *(You can pass a mutable reference `&mut String` to a function expecting an immutable `&str`!)*
+*(Note: Rust will NEVER coerce `&T` to `&mut U`, as that would violate borrow checker safety rules).*
 
 #### 2. Comprehensive List of Standard Library Coercions
 
 ##### A. Text, Filesystem, and C-FFI Strings
 Just like `String` coerces to `str`, all specialized system string buffers coerce to their slice counterparts:
-* **`&String`** $\rightarrow$ **`&str`** (Standard UTF-8 text)
-* **`&PathBuf`** $\rightarrow$ **`&Path`** (Filesystem paths)
-* **`&OsString`** $\rightarrow$ **`&OsStr`** (Operating system strings)
-* **`&CString`** $\rightarrow$ **`&CStr`** (C-style null-terminated strings for C language interop)
+* **`&String`** -> **`&str`** (Standard UTF-8 text)
+* **`&PathBuf`** -> **`&Path`** (Filesystem paths)
+* **`&OsString`** -> **`&OsStr`** (Operating system strings)
+* **`&CString`** -> **`&CStr`** (C-style null-terminated strings for C language interop)
 
 ##### B. Smart Pointers & Allocation Wrappers
 Every smart pointer dereferences to whatever inner payload it wraps:
-* **`&Box<T>`** $\rightarrow$ **`&T`** (Heap pointer)
-* **`&Rc<T>`** $\rightarrow$ **`&T`** (Single-threaded reference count)
-* **`&Arc<T>`** $\rightarrow$ **`&T`** (Multi-threaded reference count)
-* **`&Cow<'_, B>`** $\rightarrow$ **`&B`** (Clone-on-Write smart pointers, e.g. `Cow<'_, str>` $\rightarrow$ `&str`)
-* **`&Pin<Pointer>`** $\rightarrow$ **`&Target`** (Pinned memory pointers used in `async/await`)
+* **`&Box<T>`** -> **`&T`** (Heap pointer)
+* **`&Rc<T>`** -> **`&T`** (Single-threaded reference count)
+* **`&Arc<T>`** -> **`&T`** (Multi-threaded reference count)
+* **`&Cow<'_, B>`** -> **`&B`** (Clone-on-Write smart pointers, e.g. `Cow<'_, str>` -> `&str`)
+* **`&Pin<Pointer>`** -> **`&Target`** (Pinned memory pointers used in `async/await`)
 
 ##### C. Concurrency Locks & Guard Pointers
-When you lock a mutex or borrow a runtime cell, Rust returns a temporary "Guard" struct. Because guards implement `Deref`, you can pass the locked guard directly to functions expecting the inner data:
-* **`&MutexGuard<'_, T>`** $\rightarrow$ **`&T`** (and `&mut MutexGuard` $\rightarrow$ `&mut T`)
-* **`&RwLockReadGuard<'_, T>`** $\rightarrow$ **`&T`**
-* **`&Ref<'_, T>`** / **`&RefMut<'_, T>`** $\rightarrow$ **`&T`** / **`&mut T`** (From `RefCell`)
+When you lock a mutex or borrow a runtime cell, Rust returns a temporary guard struct. Because guards implement `Deref`, you can pass the locked guard directly to functions expecting the inner data:
+* **`&MutexGuard<'_, T>`** -> **`&T`** (and `&mut MutexGuard` -> `&mut T`)
+* **`&RwLockReadGuard<'_, T>`** -> **`&T`**
+* **`&Ref<'_, T>`** / **`&RefMut<'_, T>`** -> **`&T`** / **`&mut T`** (From `RefCell`)
 
 ---
 

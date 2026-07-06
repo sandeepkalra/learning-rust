@@ -60,5 +60,5 @@ Command-line tools are where Rust truly shines. These repositories are widely co
 
 #### Recommended Roadmap for Exploring Them:
 1. **Start Interactive:** Complete **[Rustlings](https://github.com/rust-lang/rustlings)** (the official community exercise suite).
-2. **Study Networking:** Read through the **`mini-redis`** repository line-by-line.
+2. **Study Networking:** Read through the **`mini-redis`** repository line by line.
 3. **Study CLI & Systems Architecture:** Read the source code of **`bat`** or **`ripgrep`**.

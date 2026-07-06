@@ -44,7 +44,7 @@ lto = "thin"
 ```
 
 ### Isolating Specific Function Boundaries
-When analyzing small algorithms, LLVM function inlining can merge child functions into their parents, obscuring call graphs. To forbid inlining on a function being investigated, use the attribute:
+When analyzing small algorithms, you may find that LLVM function inlining merges child functions into their parents, obscuring call graphs. To forbid inlining of a function under investigation, use the following attribute:
 
 ```rust
 #[inline(never)]
@@ -92,7 +92,7 @@ kcachegrind callgrind.out.<PID>
 ### Key Metrics in KCachegrind:
 1. **`Ir` (Instruction Read / Executed):** The total number of x86_64 or ARM assembly instructions executed. **This number is 100% deterministic!** Running the exact same input on a supercomputer or a Raspberry Pi will yield the exact same `Ir` count!
 2. **`I1mr` / `ILmr` (Instruction Cache Misses):** Code too large to fit in L1/L3 instruction caches, causing CPU pipeline stalls.
-3. **`D1mr` / `DLmr` (Data Cache Misses):** The #1 killer of systems performance! Indicates your algorithm is jumping across fragmented RAM (e.g., pointer-chasing through linked lists or scattered `Box<T>` nodes) instead of accessing contiguous memory (like `Vec<T>`).
+3. **`D1mr` / `DLmr` (Data Cache Misses):** The #1 killer of systems performance! This indicates that your algorithm is jumping across fragmented RAM (e.g., pointer-chasing through linked lists or scattered `Box<T>` nodes) instead of accessing contiguous memory (like `Vec<T>`).
 4. **`Bc` / `Bcm` (Branch Conditional Mispredictions):** Unpredictable `if`/`else` branches that flush the CPU speculative execution pipeline.
 
 ### Systems Optimization Workflow:

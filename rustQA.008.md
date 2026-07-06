@@ -37,9 +37,9 @@ Here is the complete breakdown of Rust containers and types that can be viewed a
 
 Because text and OS file paths are stored as contiguous arrays of bytes under the hood, they all support slicing:
 
-* **`String` & `&str`** $\rightarrow$ Can be sliced into sub-slices (`&s[0..4]`) or byte slices (`s.as_bytes()` $\rightarrow$ `&[u8]`).
-* **File Paths (`PathBuf` & `Path`)** $\rightarrow$ Can be viewed as OS string slices (`&OsStr`).
-* **OS & C Strings (`OsString`, `CString`, `CStr`)** $\rightarrow$ Can be converted into raw byte slices (`&[u8]`) or C-string views.
+* **`String` & `&str`** -> Can be sliced into sub-slices (`&s[0..4]`) or byte slices (`s.as_bytes()` -> `&[u8]`).
+* **File Paths (`PathBuf` & `Path`)** -> Can be viewed as OS string slices (`&OsStr`).
+* **OS & C Strings (`OsString`, `CString`, `CStr`)** -> Can be converted into raw byte slices (`&[u8]`) or C-string views.
 
 #### 3. Special Mention: Ring Buffers (`VecDeque<T>`)
 
@@ -156,7 +156,7 @@ fn main() {
 ## Question 3: Does struct field visibility or declaration order affect memory packing?
 
 ### Question
-Does the order of `pub` and non-pub fields in a Rust struct matter from the perspective of memory packing?
+Does the order of `pub` and non-`pub` fields in a Rust struct matter from the perspective of memory packing?
 
 ---
 

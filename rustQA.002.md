@@ -31,7 +31,7 @@ Think of it using this analogy:
 ##### 3. Shared Multi-Threaded Ownership: `Arc::new(...)`
 * **What it is:** An **A**tomic **R**eference **C**ounted smart pointer (`Arc<Mutex<String>>`).
 * **Why we need it:** Even though the `Mutex` makes *accessing* the data safe, how do we give multiple threads the right to own the `Mutex` itself? 
-  * If we just passed `Mutex` into Thread 1, Thread 1 would take full ownership (`move`), and Thread 2 wouldn't be allowed to touch it.
+  * If we just passed the `Mutex` into Thread 1, Thread 1 would take full ownership (`move`), and Thread 2 wouldn't be allowed to touch it.
   * Standard reference counting (`Rc`) isn't thread-safe because its internal counter could become corrupted if two threads clone it at once.
   * **`Arc`** uses thread-safe CPU atomic instructions to keep count of how many threads share ownership of the data. 
   * When you clone an `Arc`, it doesn't duplicate the string data—it just creates a new pointer to the exact same `Mutex` and increments the reference counter (`1 -> 2`). When a thread finishes, the counter goes down (`2 -> 1`). When the counter hits `0`, Rust frees the memory from the heap.
@@ -104,4 +104,4 @@ let handle2 = thread::spawn(move || {
 });
 ```
 
-Both threads now legally own their own pointer to the same shared resource without fighting over single-variable ownership!
+Both threads now hold their own pointer to the same shared resource without fighting over single-variable ownership!

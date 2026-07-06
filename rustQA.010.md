@@ -15,7 +15,7 @@ And no, it is **not** reserved for the standard library—**any Rust programmer 
 In Rust, the `+` operator is simply syntactic sugar for calling the `.add()` method from the `std::ops::Add` trait. By implementing `std::ops::Add` for your struct, you unlock the `+` operator immediately.
 
 #### Example 1: Adding two custom structs (`Point + Point`)
-Let's create a 2D `Point` struct and overload the `+` operator so we can add them together:
+Let's create a 2D `Point` struct and overload the `+` operator so we can add two points together:
 
 ```rust
 use std::ops::Add;
@@ -92,7 +92,7 @@ Is the list of overloadable operators exhaustive, or which operators can be over
 ---
 
 ### Answer
-All mathematical, bitwise, indexing, and comparison operators in Rust map to traits in `std::ops` or `std::cmp`. Here is the **complete, exhaustive list of all overloadable operators in Rust**:
+All mathematical, bitwise, indexing, and comparison operators in Rust map to traits in `std::ops` or `std::cmp`. Here is the **complete list of all overloadable operators in Rust**:
 
 #### 1. Arithmetic & Bitwise (`std::ops`)
 * **Binary Arithmetic:** `+` (`Add`), `-` (`Sub`), `*` (`Mul`), `/` (`Div`), `%` (`Rem`)
@@ -113,15 +113,15 @@ All mathematical, bitwise, indexing, and comparison operators in Rust map to tra
 
 #### What operators CANNOT be overloaded? ❌
 * **Logical Short-Circuiting (`&&`, `||`):** Forbidden because overloading them would destroy Rust's short-circuit evaluation guarantees.
-* **Assignment (`=`):** Standard variable assignment / moving cannot be overridden.
-* **Range Operators (`..`, `..=`):** These are hardcoded grammar syntax for creating `Range` structs.
+* **Assignment (`=`):** Standard variable assignment and moving cannot be overridden.
+* **Range Operators (`..`, `..=`):** These are built-in syntax for creating `Range` structs.
 
 ---
 
 ## Question 3: Can we invent brand new custom operators (like `operator$()`)?
 
 ### Question
-Can we create our own custom symbolic operator that does not even exist in normal grammar, let's say `operator$()`?
+Can we create our own custom symbolic operator that does not even exist in normal grammar—let's say `operator$()`?
 
 ---
 
@@ -131,13 +131,13 @@ Can we create our own custom symbolic operator that does not even exist in norma
 Languages like Swift, Scala, or Haskell allow developers to invent custom symbolic operators. Rust explicitly forbids this by design. 
 
 #### Why does Rust forbid inventing operators?
-Rust prioritizes **code readability and deterministic parsing**. If libraries were allowed to invent custom symbolic syntax like `a @! b` or `x #$~ y`, large codebases would turn into unreadable "symbol soup" where developers have no idea what precedence or meaning a symbol has without memorizing library internals.
+Rust prioritizes **code readability and deterministic parsing**. If libraries were allowed to invent custom symbolic syntax like `a @! b` or `x #$~ y`, large codebases would turn into unreadable "symbol soup" where developers would have no idea what precedence or meaning a symbol has without memorizing library internals.
 
 ---
 
 #### The Escape Hatch: Macros (`macro_rules!`) ⭐
 
-If you *really* need custom symbolic syntax for a domain-specific language (DSL)—such as mathematical formulas, hardware register manipulation, or query languages—Rust lets you invent custom operators **inside Macros**!
+If you *really* need custom symbolic syntax for a domain-specific language (DSL)—such as mathematical formulas, hardware register manipulation, or query languages—Rust lets you invent custom operators **inside macros**!
 
 For example, here is how you can invent a custom `$` operator using a macro:
 
@@ -160,4 +160,4 @@ fn main() {
 
 #### Summary
 * **Overloading Existing Operators:** Yes, you can implement almost any standard operator (`+`, `*`, `[]`, `==`) for your custom types.
-* **Inventing New Operators (`$`):** No in standard code (to keep syntax readable), but **Yes** if you write a custom Macro!
+* **Inventing New Operators (`$`):** Not in standard code (to keep syntax readable), but **yes** if you write a custom macro!

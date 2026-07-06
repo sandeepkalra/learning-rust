@@ -8,11 +8,11 @@ Explain the inner workings of `Cow<T>` in Rust. When should we use it? How does 
 ---
 
 ### Answer
-**`Cow<T>` (Clone-on-Write / Copy-on-Write)** is one of Rust's most brilliant smart pointers. It allows you to work with borrowed, read-only data with zero memory allocation, and **only upgrades to an owned, heap-allocated copy if (and when) you actually need to mutate it.**
+**`Cow<T>` (Clone-on-Write or Copy-on-Write)** is one of Rust's most brilliant smart pointers. It allows you to work with borrowed, read-only data with zero memory allocation, and **only upgrades to an owned, heap-allocated copy if (and when) you actually need to mutate it.**
 
 Here is the deep dive into how it works under the hood, when to use it, and how it detects writes:
 
-#### 1. Inner Workings: What is `Cow<T>` under the hood?
+#### 1. Inner Workings: What Is `Cow<T>` Under the Hood?
 Under the hood, `Cow<'a, B>` is literally just a standard Rust **Enum with two variants**:
 
 ```rust
@@ -23,12 +23,12 @@ pub enum Cow<'a, B: ?Sized + 'a> where B: ToOwned {
 ```
 
 For example, when you use **`Cow<'a, str>`**, at runtime it can hold either:
-1. `Cow::Borrowed(&'a str)` $\rightarrow$ A pointer to an existing string slice in memory (Costs **0 heap allocations**!).
-2. `Cow::Owned(String)` $\rightarrow$ An owned, heap-allocated `String` buffer.
+1. `Cow::Borrowed(&'a str)` -> A pointer to an existing string slice in memory (Costs **0 heap allocations**!).
+2. `Cow::Owned(String)` -> An owned, heap-allocated `String` buffer.
 
 Because it is an enum, `Cow` adds almost zero overhead: just a 1-byte discriminant tag telling the CPU whether it currently holds a pointer or an owned buffer!
 
-#### 2. When should we use `Cow<T>`? ⭐
+#### 2. When Should We Use `Cow<T>`? ⭐
 You should use `Cow<T>` whenever you are writing a function that reads data and **only modifies it conditionally (e.g., 5% of the time)**.
 
 ##### Classic Example: String Sanitization / Escaping
@@ -52,7 +52,7 @@ Imagine you are writing a function that removes swear words or replaces `%20` wi
   }
   ```
 
-#### 3. How does `Cow` detect that a copy is needed when a write happens? 🔍
+#### 3. How Does `Cow` Detect That a Copy Is Needed When a Write Happens? 🔍
 This is the most fascinating part: `Cow` does **NOT** use hardware MMU traps, page faults, or background magic to detect writes!
 
 Instead, it detects writes through explicit method calls in Rust's type system using the **`.to_mut()` method** (from the `ToOwned` trait).
@@ -95,7 +95,7 @@ impl<'a, B: ?Sized + ToOwned> Cow<'a, B> {
 
 ---
 
-## Question 2: How can `Cow<T>` be used for Frontend/Backend dirty form detection?
+## Question 2: How can `Cow<T>` be used for Frontend and Backend dirty form detection?
 
 ### Question
 Give an example of `Cow<T>` code where the backend is presenting a data form to the frontend, then the user may click the Save button, and we want to perform a write if the data is dirty, or else simply do nothing.
@@ -103,7 +103,7 @@ Give an example of `Cow<T>` code where the backend is presenting a data form to 
 ---
 
 ### Answer
-Here is a complete, runnable example modeling a Backend $\leftrightarrow$ Frontend form handler using **`Cow<str>`**.
+Here is a complete, runnable example modeling a backend <-> frontend form handler using **`Cow<str>`**.
 
 Notice how we use `Cow` for two massive optimizations:
 1. **Zero-Allocation Loading:** When the form loads from the database, every field is `Cow::Borrowed` pointing to read-only cache memory (0 heap allocations!).
@@ -187,6 +187,6 @@ fn main() {
    -> Saving: UserForm { username: Borrowed("alice_rust"), email: Borrowed("alice@example.com"), bio: Owned("Software Engineer & Rust Enthusiast 🦀") }
 ```
 
-##### Why this architecture is so powerful:
+##### Why This Architecture Is So Powerful:
 * **Memory Efficiency:** Notice in Scenario 2, even when the form became dirty, `username` and `email` stayed `Borrowed("...")`! We only allocated heap memory for the exact single field (`bio`) that the user actually touched!
 * **Speed:** `is_dirty()` executes in nanoseconds because checking `matches!(..., Cow::Owned(_))` is just checking a single 1-byte enum tag in CPU registers!

@@ -63,7 +63,7 @@ If you want to prevent *every* new project from reaching out to the internet, yo
 
 ### Step 1: Create the Shared Folder
 
-Choose an appropriate, permanent location on your file system to act as your local mirror:
+Choose an appropriate, permanent location on your filesystem to act as your local mirror:
 
 ```bash
 # On Linux / macOS
@@ -108,7 +108,7 @@ directory = "/home/your_username/.cargo/global-vendor"
 
 ## 3. Crucial Caveats & Workflow for Global Offline Environments
 
-While the global vendor setup resolves crate compilation, Cargo's dependency resolution engine has strict requirements regarding the **Crates.io Index** (the manifest list of every crate version in existence). To use your global mirror seamlessly offline, adapt your workflow to these constraints:
+While the global vendor setup resolves crate compilation, Cargo's dependency resolution engine has strict requirements regarding the **crates.io index** (the manifest list of every crate version in existence). To use your global mirror seamlessly offline, adapt your workflow to these constraints:
 
 ### Explicit Version Tagging
 
@@ -134,5 +134,5 @@ cargo run --offline
 
 ```
 
-By supplying the absolute path in your global configuration and enforcing `--offline`, Cargo will satisfy all dependency graphs straight from your local filesystem.
+By supplying the absolute path in your global configuration and enforcing `--offline`, you ensure that Cargo will satisfy all dependency graphs straight from your local filesystem.
 """

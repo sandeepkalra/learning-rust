@@ -87,7 +87,7 @@ open flamegraph.svg     # macOS
 
 ### How to Read the FlameGraph:
 1. **Y-Axis (Stack Depth):** Represents the call stack hierarchy. The bottom box is `main()`, and boxes stacked on top are the functions called by their parents.
-2. **X-Axis (Population / CPU Samples):** **This is NOT time!** The width of a box represents the **total percentage of CPU samples** that function occupied during the entire run.
+2. **X-Axis (Population / CPU Samples):** **This is NOT time!** The width of a box represents the **total percentage of CPU samples** that the function occupied during the entire run.
 3. **Plateaus (Wide Horizontal Boxes):** A wide box at the very top of a stack represents a **CPU Hotspot**—a function actively consuming massive amounts of processor time!
 4. **Interactive Zoom:** Click on any box in the browser to zoom in on that specific call tree. Click "Reset Zoom" in the top left to zoom out.
 

@@ -59,7 +59,7 @@ create_window(WindowConfig {
 ---
 
 ##### 2. The Builder Pattern (The Gold Standard for Complex APIs)
-For complex objects (like HTTP requests, database connections, or GUI widgets), idiomatic Rust uses the **Builder Pattern**. By chaining methods, you get self-documenting, named configuration:
+For complex objects (like HTTP requests, database connections, or GUI widgets), idiomatic Rust uses the **builder pattern**. By chaining methods, you get self-documenting, named configuration:
 
 ```rust
 let client = HttpClientBuilder::new()
@@ -83,7 +83,7 @@ For writing code that can be chained idiomatically, does Rust prefer to return `
 
 Instead, idiomatic Rust builders prefer **taking and returning ownership by value (`mut self -> Self`)**.
 
-Here is why Rust prefers **By-Value Chaining (`Self`)** over **By-Reference Chaining (`&mut Self`)**:
+Here is why Rust prefers **by-value chaining (`Self`)** over **by-reference chaining (`&mut Self`)**:
 
 #### 1. The Idiomatic Gold Standard: By-Value Chaining (`mut self -> Self`) ⭐
 In by-value chaining, each method takes ownership of `self`, modifies it, and returns the owned `Self` to the caller:
@@ -113,7 +113,7 @@ impl WindowBuilder {
 ```
 
 ##### Why Rust prefers this:
-1. **Clean One-Liner Expressions:** You can construct and chain everything in one smooth, unbroken expression without declaring a temporary `let mut` variable:
+1. **Clean One-Line Expressions:** You can construct and chain everything in one smooth, unbroken expression without declaring a temporary `let mut` variable:
    ```rust
    let builder = WindowBuilder::new().width(800).height(600);
    ```
@@ -121,7 +121,7 @@ impl WindowBuilder {
 
 ---
 
-#### 2. When is `&mut self -> &mut Self` used?
+#### 2. When Is `&mut self -> &mut Self` Used?
 You only return `&mut Self` when your API is specifically designed to modify an **already existing, long-lived object** across multiple lines or inside loops (such as the standard library's `std::process::Command`).
 
 ```rust
@@ -149,5 +149,5 @@ builder.set_width(800).set_height(600);
 ---
 
 #### Summary Checklist
-* Use **`mut self -> Self` (By-Value)** for constructing new objects (Builder Pattern). It gives you clean one-liners and advanced type-state safety.
-* Use **`&mut self -> &mut Self` (By-Reference)** only when modifying pre-existing objects in place where the caller already owns the variable.
+* Use **`mut self -> Self` (by-value)** for constructing new objects (builder pattern). It gives you clean one-line expressions and advanced type-state safety.
+* Use **`&mut self -> &mut Self` (by-reference)** only when modifying pre-existing objects in place where the caller already owns the variable.

@@ -36,7 +36,7 @@ It comes down entirely to personal or team style preference:
   ```rust
   let s = String::from("hello");
   ```
-* **Use `.to_string()`** when method chaining at the end of an expression:
+* **Use `.to_string()`** when chaining methods at the end of an expression:
   ```rust
   let s = get_default_username().trim().to_string();
   ```

@@ -14,7 +14,7 @@ Here is the complete industry-standard guide to the tools Rust systems programme
 
 ---
 
-#### 1. CPU & Execution Bottleneck Profilers
+#### 1. CPU and Execution Bottleneck Profilers
 These tools help answer: *"Which function is consuming 80% of my CPU cycles, and where are my thread locks or cache misses happening?"*
 
 ##### A. `perf` + `cargo-flamegraph` (Linux Industry Standard ⭐)
@@ -36,14 +36,14 @@ These tools help answer: *"Which function is consuming 80% of my CPU cycles, and
 ##### C. Intel VTune Profiler (Deep Hardware Analysis)
 * **What it is:** Intel's flagship hardware-level performance analyzer for x86_64 architectures.
 * **Why Rust devs use it:** Unmatched deep-dive analysis into CPU microarchitecture bottlenecks: L1/L2/L3 cache misses, SIMD vectorization efficiency, memory bandwidth saturation, and NUMA node latency.
-* **Cost:** **FREE & PAID**.
+* **Cost:** **FREE and PAID**.
   * **Free:** Included in the Intel oneAPI Base Toolkit (free for both commercial and non-commercial use!).
   * **Paid:** Commercial Priority Support licenses are available for enterprise teams requiring dedicated Intel engineering SLAs.
 * **Commercial Implications:** **NONE.** Intel's free license explicitly permits commercial optimization of proprietary software without code disclosure.
 
 ---
 
-##### D. Superluminal (Windows & Console Heavyweight ⭐)
+##### D. Superluminal (Windows and Console Heavyweight ⭐)
 * **What it is:** A hyper-fast, high-frequency sampling profiler built specifically for game developers and high-performance systems programmers on Windows and console platforms (Xbox/PlayStation).
 * **Why Rust devs use it:** Handles massive multi-threaded Rust applications with millions of events without lagging. Natively supports Rust symbol demangling and provides unparalleled thread-interaction visualization.
 * **Cost:** **PAID ONLY.**
@@ -53,7 +53,7 @@ These tools help answer: *"Which function is consuming 80% of my CPU cycles, and
 
 ---
 
-##### E. Valgrind / Callgrind + KCachegrind (Deterministic Profiling)
+##### E. Valgrind/Callgrind + KCachegrind (Deterministic Profiling)
 * **What it is:** A CPU emulation tool that counts exact machine instructions executed, conditional branch mispredictions, and cache miss rates.
 * **Why Rust devs use it:** When you need **deterministic instruction counting** rather than wall-clock sampling (which can be noisy due to OS background tasks).
 * **Cost:** **FREE** (Open Source - GPLv2).
@@ -69,7 +69,7 @@ These tools help answer: *"Which function is consuming 80% of my CPU cycles, and
 
 ---
 
-#### 2. Memory & Heap Profilers
+#### 2. Memory and Heap Profilers
 These tools help answer: *"Why is my memory footprint growing over time, and where are my memory leaks?"*
 
 ##### A. `dhat` (DHAT - Dynamic Heap Analysis Tool for Rust) ⭐
@@ -80,7 +80,7 @@ These tools help answer: *"Why is my memory footprint growing over time, and whe
 
 ---
 
-##### B. Bytehound & Heaptrack (Linux Memory Visualizers)
+##### B. Bytehound and Heaptrack (Linux Memory Visualizers)
 * **What they are:** Memory profilers that intercept system `malloc`/`free` calls and generate visual graphs of memory consumption over time.
 * **Cost:** **FREE** (Open Source - MIT / LGPLv2.1).
 * **Commercial Implications:** **NONE.** Used as external runtime instrumentation tools; zero licensing taint on proprietary code.
@@ -107,14 +107,14 @@ These tools help answer: *"What percentage of my code paths and branches are act
 
 ##### C. SonarQube / SonarCloud (Enterprise Quality Gating)
 * **What it is:** Enterprise static analysis, security auditing, and code coverage dashboarding platform.
-* **Cost:** **FREE & PAID**.
+* **Cost:** **FREE and PAID**.
   * **Free:** Community Edition is open source (LGPLv3) for self-hosted servers.
   * **Paid:** SonarCloud / Enterprise editions are paid subscriptions based on lines of code analyzed (ranging from $150/month to enterprise custom pricing).
 * **Commercial Implications:** **NONE.** Analyzing proprietary code with SonarQube does not require open-sourcing your codebase.
 
 ---
 
-#### 4. Benchmarking & Regression Tracking
+#### 4. Benchmarking and Regression Tracking
 These tools help answer: *"Did my latest commit make this parsing algorithm faster or slower?"*
 
 ##### A. Criterion.rs (Micro-benchmarking Standard ⭐)
@@ -134,7 +134,7 @@ These tools help answer: *"Did my latest commit make this parsing algorithm fast
 
 ##### C. CodSpeed (Continuous CI/CD Performance Tracking)
 * **What it is:** A CI/CD platform that runs your Rust benchmarks (Criterion/Divan) inside deterministic simulation environments to catch performance regressions on GitHub Pull Requests before they merge.
-* **Cost:** **FREE & PAID**.
+* **Cost:** **FREE and PAID**.
   * **Free:** 100% Free for Open Source repositories.
   * **Paid:** **$40 / seat / month** for private commercial repositories.
 * **Commercial Implications:** SaaS product; standard commercial terms for private repositories.

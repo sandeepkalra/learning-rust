@@ -98,8 +98,8 @@ my_benchmark            fastest       │ slowest       │ median        │ me
 │  ╰─ 100000            8.412 µs      │ 24.15 µs      │ 8.910 µs      │ 9.102 µs      │ 10000   │ 800  │ 800 KB, 1 count
 ```
 
-* **`median` / `mean`**: The central tendency of execution latency.
-* **`alloc / iter`**: Shows exactly how many heap allocations (`1 count`) and total bytes (`800 KB`) occurred during a single execution of your function!
+* **`median` / `mean`**: Shows the measures of central tendency for execution latency.
+* **`alloc / iter`**: Shows the exact number of heap allocations (`1 count`) and total bytes (`800 KB`) allocated during a single execution of your function!
 
 ### Best Practices:
 * **Use Divan for Allocation Auditing:** When writing zero-allocation parsers or high-frequency networking code, run `cargo bench -- --alloc` in CI to ensure your functions maintain `0 B, 0 count` allocations!
