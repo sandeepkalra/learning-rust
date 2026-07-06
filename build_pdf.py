@@ -3,6 +3,7 @@ import subprocess
 import sys
 import glob
 import shutil
+import re
 
 # Ensure required libraries are installed
 try:
@@ -62,8 +63,21 @@ def compile_pdf(md_files, output_html_name, output_pdf_name, main_title, subtitl
             f"<li><a href='#{topic_id}'><span class='toc-badge'>{file_badge}</span> <span class='toc-title'>{title}</span></a></li>"
         )
 
-        # Convert markdown content to HTML
+        # Clean up trailing blank lines inside markdown code blocks before processing
+        def clean_md_code_block(match):
+            header = match.group(1)
+            body = match.group(2)
+            footer = match.group(3)
+            return f"{header}{body.rstrip()}\n{footer}"
+        
+        content = re.sub(r'(```[a-zA-Z0-9_-]*\n)(.*?)(```)', clean_md_code_block, content, flags=re.DOTALL)
+
+        # Convert markdown content to HTML (without line numbers to keep clean single-box layout)
         html_body = markdown.markdown(content, extensions=md_extensions)
+        
+        # Strip trailing newlines inside <pre> and <code> tags to prevent WeasyPrint from rendering empty blank lines at the bottom of code blocks!
+        html_body = re.sub(r'\n+<\/pre>', '</pre>', html_body)
+        html_body = re.sub(r'\n+<\/code><\/pre>', '</code></pre>', html_body)
         
         # Add anchor ID and bidirectional jump links
         topics_html += f"""
@@ -270,7 +284,7 @@ def compile_pdf(md_files, output_html_name, output_pdf_name, main_title, subtitl
         pre {{
             background-color: #f8fafc !important; /* Light slate background */
             color: #1e293b !important; /* Dark slate text */
-            padding: 14px;
+            padding: 10px 14px;
             border-radius: 6px;
             font-family: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas, monospace;
             font-size: 8.5pt;
@@ -445,7 +459,7 @@ def build_pdf():
         "RustTopics.html",
         "RustTopics.pdf",
         "Rust Systems Programming & Architecture",
-        "The Complete Technical Q&A Series (Topics 000–020)"
+        "The Complete Technical Q&A Series (Topics 000–021)"
     )
 
     # 2. Compile Tools.Pdf (Tool topics)
