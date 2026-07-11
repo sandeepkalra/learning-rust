@@ -16,10 +16,10 @@ except ImportError:
     from pygments.formatters import HtmlFormatter
 
 def compile_pdf(md_files, output_html_name, output_pdf_name, main_title, subtitle):
-    rust_dir = "/Users/kadmin/repos/gemini_apps/tt/RustTopics"
+    rust_dir = os.path.dirname(os.path.abspath(__file__))
     output_html = os.path.join(rust_dir, output_html_name)
     output_pdf = os.path.join(rust_dir, output_pdf_name)
-    output_pdf_root = os.path.join("/Users/kadmin/repos/gemini_apps/tt", output_pdf_name)
+    output_pdf_root = os.path.join(os.path.dirname(rust_dir), output_pdf_name)
 
     print(f"\n--- Compiling {output_pdf_name} ({len(md_files)} topics) ---")
 
@@ -416,7 +416,7 @@ def compile_pdf(md_files, output_html_name, output_pdf_name, main_title, subtitl
     # If compiling Tools, also handle case variants without crashing on case-insensitive filesystems
     if "Tools" in output_pdf_name:
         tools_cap_pdf = os.path.join(rust_dir, "Tools.Pdf")
-        tools_cap_root = "/Users/kadmin/repos/gemini_apps/tt/Tools.Pdf"
+        tools_cap_root = os.path.join(os.path.dirname(rust_dir), "Tools.Pdf")
         try:
             shutil.copyfile(output_pdf, tools_cap_pdf)
             shutil.copyfile(output_pdf, tools_cap_root)
@@ -425,7 +425,7 @@ def compile_pdf(md_files, output_html_name, output_pdf_name, main_title, subtitl
             print("Case-variant PDF already points to the exact same file (case-insensitive OS).")
     elif "RustTopics" in output_pdf_name:
         sample_pdf = os.path.join(rust_dir, "sample-rusttopics.pdf")
-        sample_root = "/Users/kadmin/repos/gemini_apps/tt/sample-rusttopics.pdf"
+        sample_root = os.path.join(os.path.dirname(rust_dir), "sample-rusttopics.pdf")
         try:
             shutil.copyfile(output_pdf, sample_pdf)
             shutil.copyfile(output_pdf, sample_root)
@@ -434,7 +434,7 @@ def compile_pdf(md_files, output_html_name, output_pdf_name, main_title, subtitl
             pass
 
 def build_pdf():
-    rust_dir = "/Users/kadmin/repos/gemini_apps/tt/RustTopics"
+    rust_dir = os.path.dirname(os.path.abspath(__file__))
     all_md_files = sorted(glob.glob(os.path.join(rust_dir, "*.md")))
 
     numbered_files = []
@@ -459,7 +459,7 @@ def build_pdf():
         "RustTopics.html",
         "RustTopics.pdf",
         "Rust Systems Programming & Architecture",
-        "The Complete Technical Q&A Series (Topics 000–021)"
+        "The Complete Technical Q&A Series (Topics 000–024)"
     )
 
     # 2. Compile Tools.Pdf (Tool topics)
